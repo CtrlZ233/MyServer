@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/ISock.h
+netinet/in.h
+-
+arpa/inet.h
+-
+string
+-
+unistd.h
+-
+memory
+-
+
+/home/ctrlz/workSpace/MyServer/src/Client.cpp
+netinet/in.h
+-
+arpa/inet.h
+-
+unistd.h
+-
+stdio.h
+-
+string.h
+-
+string
+-
+iostream
+-
+ISock.h
+/home/ctrlz/workSpace/MyServer/src/ISock.h
+

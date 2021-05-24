@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/SafeQueue.h
+queue
+-
+mutex
+-
+
+../include/ThreadPool.h
+thread
+-
+vector
+-
+functional
+-
+future
+-
+SafeQueue.h
+../include/SafeQueue.h
+
+/home/ctrlz/workSpace/MyServer/src/ThreadPool.cpp
+ThreadPool.h
+/home/ctrlz/workSpace/MyServer/src/ThreadPool.h
+

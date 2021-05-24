@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/Client.dir/src/Client.cpp.o  -o Client  -Wl,-rpath,/home/ctrlz/workSpace/MyServer/build libISock_library.so 

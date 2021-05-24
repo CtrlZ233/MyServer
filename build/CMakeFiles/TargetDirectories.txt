@@ -1,0 +1,6 @@
+/home/ctrlz/workSpace/MyServer/build/CMakeFiles/rebuild_cache.dir
+/home/ctrlz/workSpace/MyServer/build/CMakeFiles/edit_cache.dir
+/home/ctrlz/workSpace/MyServer/build/CMakeFiles/Client.dir
+/home/ctrlz/workSpace/MyServer/build/CMakeFiles/Server.dir
+/home/ctrlz/workSpace/MyServer/build/CMakeFiles/ThreadPool_libirary.dir
+/home/ctrlz/workSpace/MyServer/build/CMakeFiles/ISock_library.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/Server.dir/src/Server.cpp.o  -o Server  -Wl,-rpath,/home/ctrlz/workSpace/MyServer/build libISock_library.so -lpthread libThreadPool_libirary.so 
