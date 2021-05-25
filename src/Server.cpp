@@ -41,7 +41,7 @@ int main() {
     pool.init();
     while(accpt_num--) {
         auto psock = serverSocket.accept();
-        pool.addTask(Serve, psock);
+        pool.AddTask(Serve, psock);
     }
 
 }

@@ -9,10 +9,10 @@ template<class T>
 class SafeQueue{
 public:
     SafeQueue() {}
-    SafeQueue(SafeQueue& sq) = delete;
+    SafeQueue(SafeQueue & sq) = delete;
     SafeQueue & operator = (const SafeQueue & sq) = delete;
 
-    void push(const T& t) {
+    void push(const T & t) {
         std::lock_guard<std::mutex> lock(mutex_);
         queue_.push(t);
     }
@@ -27,7 +27,7 @@ public:
         return false;
         
     }
-    bool empty() {
+    bool empty() const {
         std::lock_guard<std::mutex> lock(mutex_);
         return queue_.empty();
     }

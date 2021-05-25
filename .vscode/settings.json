@@ -53,6 +53,8 @@
         "mutex": "cpp",
         "cinttypes": "cpp",
         "future": "cpp",
-        "csignal": "cpp"
+        "csignal": "cpp",
+        "codecvt": "cpp",
+        "iomanip": "cpp"
     }
 }

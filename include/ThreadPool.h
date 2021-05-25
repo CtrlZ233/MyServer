@@ -30,7 +30,7 @@ public:
     ThreadPool (const ThreadPool &) = delete;
     ThreadPool & operator = (const ThreadPool &) = delete;
 
-    ~ ThreadPool() {
+    virtual ~ThreadPool() {
         ShutDown();
     }
 
@@ -41,7 +41,7 @@ public:
 
 
     template <typename F, typename... Args>
-    auto addTask(F&& f, Args&&... args) -> std::future<decltype(f(args...))> {
+    auto AddTask(F&& f, Args&&... args) -> std::future<decltype(f(args...))> {
         std::function<decltype(f(args...))()> func = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
         auto ptask = std::make_shared<std::packaged_task<decltype(f(args...))()>>(func);
         
