@@ -13,8 +13,8 @@ LOG::LOG(std::string filename, int maxWaitSeconds) : logFilePath_(filename), max
         exit(-1);
     }
     isShutDown_ = false;
-    currentBuffer_ = std::unique_ptr<LogBuffer>(new LogBuffer);
-    nextBuffer_ = std::unique_ptr<LogBuffer>(new LogBuffer);
+    currentBuffer_ = std::shared_ptr<LogBuffer>(new LogBuffer);
+    nextBuffer_ = std::shared_ptr<LogBuffer>(new LogBuffer);
 }
 
 

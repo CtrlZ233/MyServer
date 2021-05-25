@@ -32,6 +32,7 @@ public:
         return queue_.empty();
     }
 
+
 private:
     std::queue<T> queue_;
     std::mutex mutex_;
