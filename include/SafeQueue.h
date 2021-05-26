@@ -27,7 +27,7 @@ public:
         return false;
         
     }
-    bool empty() const {
+    bool empty()  {
         std::lock_guard<std::mutex> lock(mutex_);
         return queue_.empty();
     }

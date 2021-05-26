@@ -12,7 +12,7 @@ void ThreadObject::operator() () {
     while (!p_threadPool_->IsShutDown()) {
         {
             std::unique_lock<std::mutex> lock(p_threadPool_->conditionMutex_); // 加锁防止读脏数据，虽然用了SafeQueue后不可能能读脏数据
-            while (p_threadPool_->tasks_.empty()) { // 使用while防止spurious wakeup
+            while (p_threadPool_->tasks_.empty() && !p_threadPool_->IsShutDown()) { // 使用while防止spurious wakeup
                 p_threadPool_->conditionLock_.wait(lock);
             }
             flag = p_threadPool_->tasks_.pop(func);
@@ -34,6 +34,7 @@ void ThreadPool::init() {
 
 void ThreadPool::ShutDown() {
     isShutDown_ = true;
+    // printf("ShutDowning...\n");
     conditionLock_.notify_all();
     for (int i = 0; i < threads_.size(); ++i) {
         if (threads_[i].joinable()) {

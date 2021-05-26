@@ -55,6 +55,7 @@
         "future": "cpp",
         "csignal": "cpp",
         "codecvt": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "cstring": "cpp"
     }
 }

@@ -30,11 +30,10 @@ public:
 
     void swap(SafeVector<T> & sv) {
         std::lock_guard<std::mutex> lock(mutex_);
-        std::
         vector_.swap(sv.vector_);
     }
 
-    int size() const {
+    int size()  {
         std::lock_guard<std::mutex> lock(mutex_);
         return vector_.size();
     }

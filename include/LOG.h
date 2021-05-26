@@ -5,41 +5,25 @@
 #include <mutex>
 #include <condition_variable>
 #include "SafeVector.h"
+
+// todo:需要重载 << 运算符以实现输入流模式
 namespace Utils{
 
-// 线程安全的单例模式 
-// 参考Linux多线程服务端编程一书的单例实现，也可以在普通模式下加锁
+// 利用局部静态变量只被初始化一次的思路重写单例模式
 template <typename T>
 class Singleton {
 public:
     static T& GetInstance() {
-        pthread_once(&ponce_, &Singleton::init);  // init函数在整个程序运行期间只执行一次
-        return *value_;
+        static T obj;
+        return obj;
     }
-
-    ~Singleton() {
-        delete value_;
-    }
-
-private:
-    static void init() {
-        value_ = new T();
-    }
-
-private:
-    static pthread_once_t ponce_;
-    static T* value_;
+    Singleton(const Singleton &) = delete;
+    Singleton(Singleton &&) = delete;
 
 };
 
-template <typename T>
-pthread_once_t Singleton<T>::ponce_ = PTHREAD_ONCE_INIT;
 
-template <typename T>
-T* Singleton<T>::value_ = nullptr;
-
-
-class LOG {
+class Log {
 
 private:
     struct LogBuffer {
@@ -68,19 +52,24 @@ private:
             return buffer_[i];
         }
 
+        void clear() {
+            buffer_.clear();
+        }
+
         SafeContainer::SafeVector<std::string> buffer_;
         
     };
 
 public:
-    explicit LOG(std::string filename, int maxWaitSeconds = 3);
-    LOG & operator << (const std::string& s);
+    explicit Log(std::string logDir = "./log/", int maxWaitSeconds = 3);
+    void WriteFile();
+    void Append(const std::string & s, const std::string & fileName, const std::string & line, const std::string functionName);
     void ShutDown();
-    virtual ~LOG();
+    virtual ~Log();
 
 private:
-    void Append(const std::string & s);
-    void WriteFile();
+
+    
     void WriteFile(std::shared_ptr<LogBuffer> pBuffer);
 
 private:
