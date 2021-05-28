@@ -12,6 +12,11 @@ add_library(LOG_libirary SHARED
     src/LOG.cpp
 )
 
+
+add_library(Timer_libirary SHARED
+    src/Timer.cpp
+)
+
 target_include_directories(ISock_library
     PUBLIC 
         ${PROJECT_SOURCE_DIR}/include
@@ -27,6 +32,12 @@ target_include_directories(LOG_libirary
         ${PROJECT_SOURCE_DIR}/include
 )
 
+target_include_directories(Timer_libirary
+    PUBLIC 
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+
 
 add_executable(Server
     src/Server.cpp
@@ -34,6 +45,10 @@ add_executable(Server
 
 add_executable(Client
     src/Client.cpp
+)
+
+add_executable(test
+    src/test.cpp
 )
 
 target_link_libraries(Server
@@ -53,6 +68,11 @@ target_link_libraries(Server
 target_link_libraries(Server 
     PRIVATE
         LOG_libirary
+)
+
+target_link_libraries(test 
+    PRIVATE
+        Timer_libirary
 )
 
 

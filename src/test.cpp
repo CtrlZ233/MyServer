@@ -1,18 +1,20 @@
 #include <iostream>
+#include<unistd.h>
+// #include "../include/Timer.h"
+
+#include "Timer.h"
 using namespace std;
-
-template <typename T>
-void fun(const T& t){
-	cout << t << '\n';
+void print() {
+	std::cout << "hello" << std::endl;
 }
- 
-template <typename T, typename ... Args>
-void fun(const T& t, Args ... args){
-	cout << t << ',';
-    cout << sizeof(T) << endl;
-	fun(args...);//递归解决，利用模板推导机制，每次取出第一个，缩短参数包的大小。
-}
-
 int main() {
-    fun(1, 2, 3);
+	cout << "test" << endl;
+	Timer::Timer timer;
+	std::function<void()> func = std::bind(print);
+	
+	timer.AddTimer(func, 100, 100);
+	while(1) {
+		usleep(10000);
+		timer.Update();
+	}
 }
