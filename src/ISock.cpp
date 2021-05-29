@@ -37,7 +37,7 @@ bool Socket::send(const char *buf, int size) {
         printf("Socket State expected is connected.\n ");
         return false;
     }
-    if (::send(socketFd_, buf, size, 0) < 0) {
+    if (::send(socketFd_, buf, size, MSG_NOSIGNAL) <= 0) {
         printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
         return false;
     }

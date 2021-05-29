@@ -39,7 +39,8 @@ public:
     }
 
     T & operator [](size_t i) {
-        return vector_[i];          // maybe segment fault
+        std::lock_guard<std::mutex> lock(mutex_);  
+        return vector_[i];          
     }
 
 

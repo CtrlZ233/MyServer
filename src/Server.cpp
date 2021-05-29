@@ -10,6 +10,7 @@
 #include "ThreadPool.h"
 #include "LOG.h"
 #include "Defines.h"
+#include "Timer.h"
 
 using namespace ISock;
 // Server打开8000监听端口->遇到连接请求，分配新的socket与客户端通信->继续监听
@@ -18,17 +19,25 @@ const char* SERVER_ADDR  = "127.0.0.1";
 const int SERVER_PORT = 8000;
 const int BACKLOG = 10;
 
+Timer::Timer timer;
+
+void Send(std::shared_ptr<Socket> psock, std::string s) {
+    std::cout << "sending" << std::endl;
+    if (!psock->send(s)) {
+        std::cout << "send failed." << std::endl;
+    }
+} 
 
 void Serve(std::shared_ptr<Socket> psock) { 
     Socket* sock = psock.get();
     std::string s = sock->recv();
-    std::cout << "recv msg from client: " << s << std::endl;
-    // log << "recv msg from client: " << s;
-    for (int i = 0; i < 100000; ++i) {
-        LOG("recv msg from client: " + s);
-    }
     
-    sock->send(s);
+    std::cout << "recv msg from client: " << s << std::endl;
+
+    
+    std::function<void()> func = std::bind(Send, psock, s);
+    // 每秒发送一次信息给客户端，持续五十次。
+    auto pnode = timer.AddTimer(func, 100, 50);
 }
 
 void LogBackEnd() {
@@ -45,14 +54,18 @@ int main() {
 
     int backlog = 10;
 
+    // 启用新的线程用于定时器计数
+    std::thread th(&Timer::Timer::Start, &timer, 10000);
+
     serverSocket.listen(3);
     int accpt_num = 3;
     pool.init();
-    pool.AddTask(LogBackEnd);
+    // pool.AddTask(LogBackEnd);
     while(accpt_num--) {
         auto psock = serverSocket.accept();
         pool.AddTask(Serve, psock);
     }
     // todo: 需要等待所有任务执行完 
-    GETLOG.ShutDown();
+    // GETLOG.ShutDown();
+    th.join();
 }

@@ -18,7 +18,7 @@ void ThreadObject::operator() () {
             flag = p_threadPool_->tasks_.pop(func);
         }
         if (flag) {
-            printf("processing...\n");
+            // printf("processing...\n");
             func();
         }
     }

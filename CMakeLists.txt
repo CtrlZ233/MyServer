@@ -55,6 +55,7 @@ target_link_libraries(Server
     PRIVATE
         ISock_library
 )
+
 target_link_libraries(Server 
     PRIVATE
         pthread
@@ -70,13 +71,37 @@ target_link_libraries(Server
         LOG_libirary
 )
 
+target_link_libraries(Server 
+    PRIVATE
+        Timer_libirary
+)
+
 target_link_libraries(test 
     PRIVATE
         Timer_libirary
+)
+
+target_link_libraries(test 
+    PRIVATE
+        ThreadPool_libirary
+)
+
+target_link_libraries(test 
+    PRIVATE
+        pthread
 )
 
 
 target_link_libraries(Client
     PRIVATE
         ISock_library
+)
+target_link_libraries(Client
+    PRIVATE
+        pthread
+)
+
+target_link_libraries(Client
+    PRIVATE
+        LOG_libirary
 )

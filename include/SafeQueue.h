@@ -9,7 +9,10 @@ template<class T>
 class SafeQueue{
 public:
     SafeQueue() {}
-    SafeQueue(SafeQueue & sq) = delete;
+    SafeQueue(const SafeQueue & sq) {
+        mutex_ = std::move(sq.mutex_);
+        queue_ = sq.queue_;
+    }
     SafeQueue & operator = (const SafeQueue & sq) = delete;
 
     void push(const T & t) {
