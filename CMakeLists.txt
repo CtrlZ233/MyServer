@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(MyServer)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+file(MAKE_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/log)
 add_library(ISock_library SHARED
     src/ISock.cpp    
 )
@@ -17,26 +20,7 @@ add_library(Timer_libirary SHARED
     src/Timer.cpp
 )
 
-target_include_directories(ISock_library
-    PUBLIC 
-        ${PROJECT_SOURCE_DIR}/include
-)
-
-target_include_directories(ThreadPool_libirary
-    PUBLIC 
-        ${PROJECT_SOURCE_DIR}/include
-)
-
-target_include_directories(LOG_libirary
-    PUBLIC 
-        ${PROJECT_SOURCE_DIR}/include
-)
-
-target_include_directories(Timer_libirary
-    PUBLIC 
-        ${PROJECT_SOURCE_DIR}/include
-)
-
+include_directories(  ${PROJECT_SOURCE_DIR}/include)
 
 
 add_executable(Server
@@ -53,55 +37,17 @@ add_executable(test
 
 target_link_libraries(Server
     PRIVATE
-        ISock_library
+        ISock_library pthread ThreadPool_libirary LOG_libirary Timer_libirary
 )
 
-target_link_libraries(Server 
-    PRIVATE
-        pthread
-)
-
-target_link_libraries(Server 
-    PRIVATE
-        ThreadPool_libirary
-)
-
-target_link_libraries(Server 
-    PRIVATE
-        LOG_libirary
-)
-
-target_link_libraries(Server 
-    PRIVATE
-        Timer_libirary
-)
 
 target_link_libraries(test 
     PRIVATE
-        Timer_libirary
-)
-
-target_link_libraries(test 
-    PRIVATE
-        ThreadPool_libirary
-)
-
-target_link_libraries(test 
-    PRIVATE
-        pthread
+        Timer_libirary ThreadPool_libirary pthread
 )
 
 
 target_link_libraries(Client
     PRIVATE
-        ISock_library
-)
-target_link_libraries(Client
-    PRIVATE
-        pthread
-)
-
-target_link_libraries(Client
-    PRIVATE
-        LOG_libirary
+        ISock_library pthread LOG_libirary
 )

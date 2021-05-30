@@ -29,11 +29,11 @@ make
 ### 测试
 打开一个终端：
 ```
-./Server
+cd bin/ && ./Server
 ```
 
 打开另一个终端：
 ```
-./Client
+cd bin/ && ./Client
 ```
 
