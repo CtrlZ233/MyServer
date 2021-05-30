@@ -20,7 +20,7 @@
 
 ### 编译
 ```
-mkdir build && cd build && mkdir log
+mkdir build && cd build
 make ..
 cmake ..
 make
