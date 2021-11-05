@@ -12,7 +12,7 @@
 #include "Defines.h"
 using namespace ISock;
 const int BUFSIZE = 512;
-const char* SERVER_ADDR  = "127.0.0.1";
+const char* SERVER_ADDR  = "192.168.1.177";
 const int SERVER_PORT = 8000;
 
 void LogBackEnd() {

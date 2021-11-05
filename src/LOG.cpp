@@ -14,7 +14,6 @@ const int Log::maxSize = 1024;
 
 
 // LOG:: public method
-
 Log::Log(std::string logDir, int maxWaitSeconds) : maxWaitSeconds_(maxWaitSeconds){
     char curTime[64];
     time_t rawtime;
@@ -35,8 +34,6 @@ Log::Log(std::string logDir, int maxWaitSeconds) : maxWaitSeconds_(maxWaitSecond
 }
 
 
-
-
 void Log::ShutDown() {
     isShutDown_ = true;
     conditionLock_.notify_all();
@@ -53,8 +50,6 @@ Log:: ~Log() {
         
     fd_.close();
 }
-
-
 
 
 void Log::Append(const std::string & s, const std::string & fileName, const std::string & line, const std::string functionName) {

@@ -1,5 +1,5 @@
 #ifndef SAFE_LIST_H_
-#define SAFE_LIST_H
+#define SAFE_LIST_H_
 
 #include <list>
 #include <mutex>
@@ -16,6 +16,21 @@ public:
     void push_back(const T & t) {
         std::lock_guard<std::mutex> lock(mutex_);
         list_.push_back(t);
+    }
+
+    void push_back(T && t) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        list_.push_back(std::move(t));
+    }
+    
+    T& front() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return list_.front();
+    }
+
+    void pop_front() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        list_.pop_front();
     }
 
     void clear() {
@@ -41,6 +56,10 @@ public:
     std::list<T> getList() {
         std::lock_guard<std::mutex> lock(mutex_);
         return list_;
+    }
+
+    bool empty()  {
+        return size() == 0;
     }
 
 private:

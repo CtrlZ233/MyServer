@@ -54,7 +54,6 @@ private:
     uint32_t curTimeStamp_; // 当前时间戳
     std::vector<TimerPlate> timer_;
     bool shutDown_;
-
 };
 
 }

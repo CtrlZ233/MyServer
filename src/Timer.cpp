@@ -36,7 +36,7 @@ WeakTimerNodePtr Timer::AddTimer(Task t, uint32_t interval, size_t repeat) {
     
     ReHash(elem);
     return elem;
-}
+}   
 
 WeakTimerNodePtr Timer::AddTimer(Task t, uint32_t interval) { // 使用WeakPtr减短TimerNode对象的生命周期
     return AddTimer(t, interval, 1);
