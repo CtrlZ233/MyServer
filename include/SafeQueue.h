@@ -35,10 +35,34 @@ public:
         return queue_.empty();
     }
 
+
 private:
     std::queue<T> queue_;
     std::mutex mutex_;
 
+};
+
+template <typename T>
+class SafeValue {
+public:
+    SafeValue() { }
+    SafeValue(T value) : value_(value) { }
+    SafeValue(SafeValue && s) {
+        value_ = s.value_;
+    }
+    T getValue() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return value_;
+    }
+
+    void setValue(T value) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        value_ = value;
+    }
+
+private:
+    T value_;
+    std::mutex mutex_;
 };
 
 }

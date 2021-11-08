@@ -6,6 +6,7 @@
 // #include "../include/Singleton.h"
 #include "ObjectPool.h"
 #include "Singleton.h"
+#include "SafeList.h"
 #include <thread>
 using namespace std;
 
@@ -20,7 +21,19 @@ void test_object_pool() {
 	}
 }
 
+void addOne(int  i) {
+	i = i + 1;
+}
+void print(int i) {
+	std::cout << i << std::endl;
+}
+
 int main() {
-	test_object_pool();
+	// test_object_pool();
+	SafeContainer::SafeList<int> l;
+	l.push_back(1);
+	l.push_back(2);
+	l.traverse(addOne);
+	l.traverse(print);
 }
 

@@ -53,6 +53,17 @@ public:
         }
     }
 
+    bool deleteElem(T &t) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        for (auto iter = list_.begin(); iter != list_.end(); ++iter) {
+            if (t == *iter) {
+                list_.erase(iter);
+                return true;
+            }
+        }
+        return false;
+    }
+
     std::list<T> getList() {
         std::lock_guard<std::mutex> lock(mutex_);
         return list_;

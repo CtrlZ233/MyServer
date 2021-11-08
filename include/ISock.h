@@ -64,7 +64,7 @@ public:
     }
 
     void SetPort(uint16_t port) {
-        addr_.sin_port = port;
+        addr_.sin_port = htons(port);
     }
 
 
