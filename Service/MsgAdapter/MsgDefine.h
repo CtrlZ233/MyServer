@@ -3,7 +3,7 @@
 
 namespace MessageAdapter {
     enum MsgType {
-        CONNECTION_REQ,
+        CONNECTION,
         REGISTER_REQ,
         LOGIN_REQ,
         MSGTYPE_BOTTOM

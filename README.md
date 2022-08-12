@@ -44,7 +44,7 @@ make
 cd bin/ && ./Server
 ```
 
-打开另一个终端：
+![java客户端](git@github.com:CtrlZ233/swingClient.git)项目在另一个仓库。
 ```
 cd bin/ && ./Client
 ```

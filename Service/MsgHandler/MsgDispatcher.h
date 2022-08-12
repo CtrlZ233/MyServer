@@ -9,11 +9,10 @@
 #include "MsgDefine.h"
 #include "MsgHanlder.h"
 
-namespace Service {
+namespace MessageHandler {
     using namespace Utils;
     using namespace ISock;
     using MessageAdapter::MsgType;
-    using MessageHandler::MsgHandler;
 
     class MsgDispatcher {
     public:
@@ -21,10 +20,14 @@ namespace Service {
 
         void HandleMessage();
 
-        void GenerateMessgae(std::string msg);
+        void GenerateMessgae(std::string &msg);
 
-        static bool RegisterHandler(MsgType type, MsgHandler *);
-        
+        bool RegisterHandler(MsgType type, MsgHandler *);
+
+        bool RegistSocket(unsigned int pid, std::shared_ptr<Socket> psock);
+
+        bool DeRegistSocket(unsigned int pid);
+
     private:
         MsgDispatcher() {}
 
@@ -32,15 +35,16 @@ namespace Service {
 
         MsgDispatcher operator = (const MsgDispatcher &other) = delete;
 
-        ~MsgDispatcher() {}
+        ~MsgDispatcher();
 
-        std::map<unsigned int, Socket *> pid2sock;
-        static std::map<MsgType, MsgHandler *> handlers;
+        std::map<unsigned int, std::shared_ptr<Socket>> pid2sock;
+        std::map<MsgType, MsgHandler *> handlers;
 
         const static unsigned int MAX_MESSAGE_NUM = 1000;
 
         std::vector<std::string> msgPool;
         std::mutex RWLock;
+        std::mutex pidLock;
         std::condition_variable r_condition;
         std::condition_variable w_condition;
     };

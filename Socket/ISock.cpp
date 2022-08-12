@@ -32,7 +32,7 @@ namespace ISock{
     Socket::Socket(int socketFd, SocketState state, const SockAddr& addr) : socketFd_(socketFd), state_(state) {
         remoteAddr_.reset(new SockAddr(addr));
     }
-    bool Socket::send(const char *buf, int size) {
+    bool Socket::Send(const char *buf, int size) {
         if (state_ != CONNECTED) {
             printf("Socket State expected is connected.\n ");
             return false;
@@ -43,16 +43,16 @@ namespace ISock{
         }
         return true;
     }
-    bool Socket::send(std::string & s) {
-        return send(s.c_str(), s.length());
+    bool Socket::Send(std::string & s) {
+        return Send(s.c_str(), s.length());
     }
 
-    int Socket::recv(char *buf, int max_len) {
+    int Socket::Recv(char *buf, int max_len) {
         if (state_ == CONNECTED) {
-            
             int n = ::recv(socketFd_, buf, max_len, 0);
-            if (n < 0) {
+            if (n <= 0) {
                 printf("recv socket error: %s(errno: %d)\n", strerror(errno), errno);
+                state_ = CLOSED;
             }
             return n;
         }
@@ -60,13 +60,14 @@ namespace ISock{
         return 0;
     }
 
-    std::string Socket::recv() {
+    std::string Socket::Recv() {
         char recvBuf[maxBufSize];
-        int n = recv(recvBuf, maxBufSize);
+        int n = Recv(recvBuf, maxBufSize);
+        printf("recv len: %d\n", n);
         return std::move(std::string(recvBuf, n));
     }
 
-    bool Socket::bind(const SockAddr & addr) {
+    bool Socket::Bind(const SockAddr & addr) {
         if (state_ != CLOSED) {
             printf("Socket State expected is initialed and closed.\n ");
             return false;
@@ -78,7 +79,7 @@ namespace ISock{
         return true;
     }
 
-    bool Socket::listen(int backlog) {
+    bool Socket::Listen(int backlog) {
         if (state_ != CLOSED) {
             printf("Socket State expected is initialed and closed.\n ");
             return false;
@@ -92,7 +93,7 @@ namespace ISock{
         return true; 
     }
 
-    bool Socket::connect(SockAddr & addr) {
+    bool Socket::Connect(SockAddr & addr) {
         if (state_ != CLOSED) {
             printf("Socket State expected is initialed and closed.\n ");
             return false;
@@ -107,7 +108,7 @@ namespace ISock{
     }
 
 
-    std::shared_ptr<Socket> Socket::accept() {
+    std::shared_ptr<Socket> Socket::Accept() {
         if (state_ != LISTENING) {
             printf("Socket State expected is listenning.\n ");
             return nullptr;

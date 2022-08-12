@@ -4,7 +4,8 @@ include_directories(${PROJECT_SOURCE_DIR}/framework/LOG)
 include_directories(${PROJECT_SOURCE_DIR}/Socket)
 include_directories(${PROJECT_SOURCE_DIR}/Service/MsgAdapter)
 include_directories(${PROJECT_SOURCE_DIR}/Service/MsgHandler)
+include_directories(.)
 
-set (LIB_SOURCE MsgDispatcher.cpp  PidAllocator.cpp)
+set (LIB_SOURCE   PidAllocator.cpp)
 
-add_library(Service_libirary STATIC ${LIB_SOURCE})
+add_library(PidAllocator_libirary STATIC ${LIB_SOURCE})

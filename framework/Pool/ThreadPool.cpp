@@ -7,9 +7,11 @@ namespace ThreadUtils {
     }
 
     void ThreadObject::operator() () {
-        std::function<void()> func;
+        
         while (!p_threadPool_->IsShutDown()) {
+            std::function<void()> func;
             {
+                
                 // 加锁防止读脏数据，虽然用了SafeQueue后不可能能读脏数据
                 std::unique_lock<std::mutex> lock(p_threadPool_->conditionMutex_);
                 // 使用while防止spurious wakeup

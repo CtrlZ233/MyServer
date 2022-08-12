@@ -12,7 +12,7 @@ namespace Utils {
 
         unsigned int alloc();
 
-        void delloc(unsigned int id);
+        void dealloc(unsigned int id);
 
     private:
 
@@ -29,6 +29,8 @@ namespace Utils {
     };
 
     unsigned int PidAlloc();
+
+    void PidDealloc(unsigned int);
 
 }
 

@@ -3,7 +3,7 @@
 namespace Utils {
 
     PidAllocator::PidAllocator() {
-        current = 0;
+        current = 1;
     }
 
     unsigned int PidAllocator::alloc() {
@@ -22,14 +22,18 @@ namespace Utils {
         return instance;
     }
 
-    void PidAllocator::delloc(unsigned int id) {
-        printf("delloc pid: %u", id);
+    void PidAllocator::dealloc(unsigned int id) {
+        printf("delloc pid: %u\n", id);
         std::unique_lock<std::mutex> lock(modifyMutex);
         recycled.push_back(id);
     }
 
     unsigned int PidAlloc() {
         return PidAllocator::Instance().alloc();
+    }
+
+    void PidDealloc(unsigned int pid) {
+        PidAllocator::Instance().dealloc(pid);
     }
 
 }

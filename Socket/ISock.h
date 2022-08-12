@@ -6,6 +6,7 @@
 #include <string>
 #include <unistd.h>
 #include <memory>
+#include <mutex>
 
 namespace ISock{
 
@@ -24,17 +25,21 @@ namespace ISock{
         Socket();
         Socket(Socket & s) = delete;
 
-        bool send(const char *buf, int size);
-        bool send(std::string & s);
-        int recv(char *buf, int max_len);
-        std::string recv();
-        bool bind(const SockAddr& addr);
-        bool listen(int backlog);
-        bool connect(SockAddr& addr);
-        std::shared_ptr<Socket> accept();
+        bool Send(const char *buf, int size);
+        bool Send(std::string & s);
+        int Recv(char *buf, int max_len);
+        std::string Recv();
+        bool Bind(const SockAddr& addr);
+        bool Listen(int backlog);
+        bool Connect(SockAddr& addr);
+        std::shared_ptr<Socket> Accept();
 
+        bool IsConnected() {
+            return state_ == CONNECTED;
+        }
 
-        virtual ~ Socket() {
+        virtual ~Socket() {
+            printf("bye bye~\n");
             close(socketFd_);
         }
         
