@@ -1,6 +1,6 @@
 #include "ISock.h"
 #include <string.h>
-namespace ISock{
+namespace ISock {
 
     const int Socket::maxBufSize = 512;
 

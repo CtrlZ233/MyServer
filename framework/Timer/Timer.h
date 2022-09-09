@@ -7,8 +7,9 @@
 #include <memory>
 #include <iostream>
 #include <mutex>
+#include <atomic>
 #include "SafeList.h"
-namespace Timer{
+namespace Timer {
     
     using Task = std::function<void()>;
     // 只执行一次，每隔一段时间执行一次（有限次、无限次）
@@ -23,7 +24,7 @@ namespace Timer{
         uint32_t timeStamp_;
         size_t repeat_;
         bool always_;
-        bool shutDown_;
+        std::atomic<bool> shutDown_;
     };
 
     using TimerNodePtr =  std::shared_ptr<TimerNode>;
@@ -53,7 +54,7 @@ namespace Timer{
         void ReHash(int index);
         uint32_t curTimeStamp_; // 当前时间戳
         std::vector<TimerPlate> timer_;
-        bool shutDown_;
+        std::atomic<bool> shutDown_;
     };
 
 }

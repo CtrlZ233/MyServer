@@ -14,7 +14,7 @@ namespace Timer {
     }
 
     Timer::~Timer() {
-        shutDown_ = true;
+        shutDown_.store(true);
     }
 
     void Timer::TimerInit() {
@@ -46,7 +46,7 @@ namespace Timer {
     void Timer::DeleteTimer(WeakTimerNodePtr pnode) {
         TimerNodePtr obj(pnode.lock());         // 尝试提升，提升失败则说明该定时器节点已经失效。
         if (obj){
-            obj->shutDown_ = true;
+            obj->shutDown_.store(true);
         }
         
     }
@@ -80,7 +80,7 @@ namespace Timer {
         if ((curTimeStamp_ & ((1 << (WIDTH * i)) - 1)) == 0) {
             auto slot = timer_[i][(curTimeStamp_ >> (WIDTH * i)) & (SHIFT - 1)]->getList();
             for (auto elem : slot) {
-                if (!elem->shutDown_) {
+                if (!elem->shutDown_.load()) {
                     ReHash(elem);
                 }
             }
@@ -94,10 +94,9 @@ namespace Timer {
     // 且冲突进发生在list上，可采用SafeList解决。
     // 最后，由于list动态分配内存，AddTimer的push_back操作不会导致遍历该list时的迭代器失效。
     void Timer::Update() {
-        
         auto slot = timer_[0][curTimeStamp_ & (SHIFT - 1)]->getList();
         for (auto elem : slot) {
-            if (!elem->shutDown_) {
+            if (!elem->shutDown_.load()) {
                 elem->task_();
                 
                 elem->repeat_--;
@@ -115,14 +114,14 @@ namespace Timer {
     }
 
     void Timer::Start(int interval) {
-        while(!shutDown_) {
+        while(!shutDown_.load()) {
             usleep(interval);
             Update();
         }
     }
 
     void Timer::ShutDown() {
-        shutDown_ = true;
+        shutDown_.store(true);
     }
 
 }
