@@ -1,17 +1,17 @@
 #include "ITimerListener.h"
+#include <thread>
 
 namespace Timer {
-    ITimerListener::ITimerListener(unsigned int time_val) : interval(time_val), timer() {
-        std::thread th(&Timer::Start, &timer, 10000);
-        curTimerNode = timer.AddTimer(std::bind(&ITimerListener::HandleTimeOut, this), interval, 1);
-    }
+    static Timer GLOABL_TIMER;
+    static std::thread th(&Timer::Start, &GLOABL_TIMER, 10000);
+    ITimerListener::ITimerListener(unsigned int time_val) : interval(time_val) {}
 
     void ITimerListener::ResetTimer() {
-        timer.DeleteTimer(curTimerNode);
-        curTimerNode = timer.AddTimer(std::bind(&ITimerListener::HandleTimeOut, this), interval, 1);
+        GLOABL_TIMER.DeleteTimer(curTimerNode);
+        curTimerNode = GLOABL_TIMER.AddTimer(std::bind(&ITimerListener::HandleTimeOut, this), interval, 1);
     }
 
-    ITimerListener::~ITimerListener() {
-        timer.ShutDown();
+    void ITimerListener::Start() {
+        curTimerNode = GLOABL_TIMER.AddTimer(std::bind(&ITimerListener::HandleTimeOut, this), interval, 1);
     }
 }

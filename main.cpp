@@ -15,7 +15,7 @@
 #include "PidAllocator.h"
 #include "RspMessage.h"
 
-using namespace ISock;
+using namespace NetIO;
 // Server打开8000监听端口->遇到连接请求，分配新的socket与客户端通信->继续监听
 const int BUFSIZE = 512;
 const char* SERVER_ADDR  = "127.0.0.1";

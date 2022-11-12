@@ -11,7 +11,9 @@ template <typename T>
             static T obj;
             return obj;
         }
+
         Singleton(const Singleton &) = delete;
+        
         Singleton(Singleton &&) = delete;
     };
 

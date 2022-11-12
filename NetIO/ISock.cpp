@@ -1,6 +1,6 @@
 #include "ISock.h"
 #include <string.h>
-namespace ISock {
+namespace NetIO {
 
     const int Socket::maxBufSize = 512;
 
@@ -32,6 +32,7 @@ namespace ISock {
     Socket::Socket(int socketFd, SocketState state, const SockAddr& addr) : socketFd_(socketFd), state_(state) {
         remoteAddr_.reset(new SockAddr(addr));
     }
+
     bool Socket::Send(const char *buf, int size) {
         if (state_ != CONNECTED) {
             printf("Socket State expected is connected.\n ");
@@ -43,6 +44,7 @@ namespace ISock {
         }
         return true;
     }
+    
     bool Socket::Send(std::string & s) {
         return Send(s.c_str(), s.length());
     }
@@ -53,10 +55,11 @@ namespace ISock {
             if (n <= 0) {
                 printf("recv socket error: %s(errno: %d)\n", strerror(errno), errno);
                 state_ = CLOSED;
+                close(socketFd_);
             }
             return n;
         }
-        printf("Socket State expected is connected.\n ");
+        printf("Socket State expected is connected.\n");
         return 0;
     }
 

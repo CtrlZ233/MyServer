@@ -10,7 +10,9 @@ namespace SafeContainer {
     class SafeVector {
     public:
         SafeVector() {}
+
         SafeVector(SafeVector & sv) = delete;
+        
         SafeVector & operator = (const SafeVector & sv) = delete;
 
         void push_back(const T & t) {

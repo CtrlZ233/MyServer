@@ -7,7 +7,7 @@
 
 namespace MessageHandler {
     using namespace MessageAdapter;
-    using ISock::Socket;
+    using NetIO::Socket;
     class MsgHandler {
 
     public:

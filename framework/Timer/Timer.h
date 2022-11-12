@@ -28,8 +28,11 @@ namespace Timer {
     };
 
     using TimerNodePtr =  std::shared_ptr<TimerNode>;
+
     using WeakTimerNodePtr = std::weak_ptr<TimerNode>;
+
     using ListPtr = std::unique_ptr<SafeContainer::SafeList<TimerNodePtr> >;
+
     using TimerPlate = std::vector<ListPtr>;
 
 
@@ -41,17 +44,28 @@ namespace Timer {
     public:
         
         Timer();
+
         virtual ~Timer();
+
         void TimerInit();
+
         WeakTimerNodePtr AddTimer(Task t, uint32_t interval);
+
         WeakTimerNodePtr AddTimer(Task t, uint32_t interval, size_t repeat);
+
         void DeleteTimer(WeakTimerNodePtr pnode);
+
         void Start(int interval);
+
         void ShutDown();
+
     private:
         void Update();
+
         void ReHash(TimerNodePtr pnode);
+
         void ReHash(int index);
+        
         uint32_t curTimeStamp_; // 当前时间戳
         std::vector<TimerPlate> timer_;
         std::atomic<bool> shutDown_;

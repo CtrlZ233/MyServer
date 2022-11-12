@@ -27,8 +27,11 @@ namespace ThreadUtils{
     class ThreadPool {  
     public:
         friend class ThreadObject;
+
         explicit ThreadPool(const int maxNum);
+
         ThreadPool (const ThreadPool &) = delete;
+
         ThreadPool & operator = (const ThreadPool &) = delete;
 
         virtual ~ThreadPool() {
@@ -38,6 +41,7 @@ namespace ThreadUtils{
         void init();
 
         bool IsShutDown() const { return isShutDown_; }
+        
         void ShutDown();
 
         template <typename F, typename... Args>

@@ -47,15 +47,16 @@ namespace Utils{
 
     public:
         explicit Log(std::string logDir = "./log/", int maxWaitSeconds = 3);
+
         void WriteFile();
+
         void Append(const std::string & s, const std::string & fileName, const std::string & line,
                     const std::string functionName);
+
         void ShutDown();
         virtual ~Log();
 
     private:
-
-        
         void WriteFile(std::shared_ptr<LogBuffer> pBuffer);
 
     private:

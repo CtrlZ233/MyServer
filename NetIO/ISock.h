@@ -8,7 +8,7 @@
 #include <memory>
 #include <mutex>
 
-namespace ISock{
+namespace NetIO {
 
     class Socket;
     class SockAddr;
@@ -23,15 +23,23 @@ namespace ISock{
     class Socket{
     public:
         Socket();
+
         Socket(Socket & s) = delete;
 
         bool Send(const char *buf, int size);
+
         bool Send(std::string & s);
+
         int Recv(char *buf, int max_len);
+
         std::string Recv();
+
         bool Bind(const SockAddr& addr);
+
         bool Listen(int backlog);
+
         bool Connect(SockAddr& addr);
+        
         std::shared_ptr<Socket> Accept();
 
         bool IsConnected() {
@@ -42,10 +50,11 @@ namespace ISock{
             printf("bye bye~\n");
             close(socketFd_);
         }
-        
 
-    private:
+    public:
         int socketFd_;
+        
+    private:
         std::shared_ptr<SockAddr> remoteAddr_;
         SocketState state_;
         static const int maxBufSize;

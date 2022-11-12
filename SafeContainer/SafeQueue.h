@@ -9,10 +9,12 @@ namespace SafeContainer{
     class SafeQueue{
     public:
         SafeQueue() {}
+
         SafeQueue(const SafeQueue & sq) {
             mutex_ = std::move(sq.mutex_);
             queue_ = sq.queue_;
         }
+
         SafeQueue & operator = (const SafeQueue & sq) = delete;
 
         void push(const T & t) {
@@ -30,6 +32,7 @@ namespace SafeContainer{
             return false;
             
         }
+        
         bool empty()  {
             std::lock_guard<std::mutex> lock(mutex_);
             return queue_.empty();

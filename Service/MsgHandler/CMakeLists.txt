@@ -1,4 +1,4 @@
-include_directories(${PROJECT_SOURCE_DIR}/Socket)
+include_directories(${PROJECT_SOURCE_DIR}/NetIO)
 include_directories(${PROJECT_SOURCE_DIR}/Service/MsgAdapter)
 include_directories(${PROJECT_SOURCE_DIR}/Service)
 include_directories(.)

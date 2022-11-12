@@ -11,7 +11,7 @@
 
 namespace MessageHandler {
     using namespace Utils;
-    using namespace ISock;
+    using namespace NetIO;
     using MessageAdapter::MsgType;
 
     class MsgDispatcher {

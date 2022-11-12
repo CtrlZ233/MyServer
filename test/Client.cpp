@@ -10,7 +10,7 @@
 #include "ISock.h"
 #include "LOG.h"
 #include "LOGDefines.h"
-using namespace ISock;
+using namespace NetIO;
 const int BUFSIZE = 512;
 const char* SERVER_ADDR  = "127.0.0.1";
 const int SERVER_PORT = 8080;

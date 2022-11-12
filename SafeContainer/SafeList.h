@@ -10,7 +10,9 @@ namespace SafeContainer{
     class SafeList{
     public:
         SafeList<T>() {};
+
         SafeList(const SafeList & sl) = delete;
+        
         SafeList & operator = (const SafeList & sl) = delete;
 
         void push_back(const T & t) {
