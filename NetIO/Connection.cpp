@@ -12,6 +12,7 @@ namespace NetIO {
     }
 
     void Connection::HandleTimeOut() {
+        // 向 dispatch 发送关闭连接的消息
 
     }
 

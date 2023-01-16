@@ -6,4 +6,4 @@ include_directories(${PROJECT_SOURCE_DIR}/Service/MsgHandler)
 include_directories(${PROJECT_SOURCE_DIR}/Service/MsgAdapter)
 set (LIB_SOURCE ISock.cpp EpollService.cpp Connection.cpp Connection.h)
 
-add_library(ISock_library STATIC ${LIB_SOURCE})
+add_library(ISock_lib STATIC ${LIB_SOURCE})

@@ -8,4 +8,4 @@ include_directories(.)
 
 set (LIB_SOURCE RegisterMsgHandler.cpp MsgDispatcher.cpp)
 
-add_library(MsgHandler_libirary SHARED ${LIB_SOURCE})
+add_library(MsgHandler_lib STATIC ${LIB_SOURCE})

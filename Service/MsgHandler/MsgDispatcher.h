@@ -24,7 +24,7 @@ namespace MessageHandler {
 
         bool RegisterHandler(MsgType type, MsgHandler *);
 
-        bool RegistSocket(unsigned int pid, std::shared_ptr<Connection> psock);
+        bool RegistSocket(unsigned int pid, std::shared_ptr<Connection> connection);
 
         bool DeRegistSocket(unsigned int pid);
 

@@ -21,6 +21,8 @@ namespace NetIO {
 
             std::string Recv();
 
+
+
         private:
             std::shared_ptr<Socket> sock;
             static const int BEAT_INTERVAL = 100;

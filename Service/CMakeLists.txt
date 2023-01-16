@@ -8,4 +8,4 @@ include_directories(.)
 
 set (LIB_SOURCE   PidAllocator.cpp)
 
-add_library(PidAllocator_libirary STATIC ${LIB_SOURCE})
+add_library(PidAllocator_lib STATIC ${LIB_SOURCE})
