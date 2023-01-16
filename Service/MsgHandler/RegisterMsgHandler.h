@@ -6,7 +6,7 @@
 namespace MessageHandler {
     class RegisterMsgHandler : public MsgHandler {
     public:
-        virtual void HandleMessage(ReqMessage *msg, std::shared_ptr<Socket> psock);
+        virtual void HandleMessage(ReqMessage *msg, std::shared_ptr<NetIO::Connection> connection);
     };
 }
 

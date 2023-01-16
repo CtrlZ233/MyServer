@@ -6,7 +6,7 @@
 namespace MessageHandler {
     using namespace MessageAdapter;
 
-    void RegisterMsgHandler::HandleMessage(ReqMessage *msg, std::shared_ptr<Socket> psock) {
+    void RegisterMsgHandler::HandleMessage(ReqMessage *msg, std::shared_ptr<Connection> connection) {
         RegisterReqMessage *registerMsg = reinterpret_cast<RegisterReqMessage *>(msg);
         if (registerMsg->msgType != REGISTER_REQ) {
             printf("wrong messageType:[%u]\n", registerMsg->msgType);

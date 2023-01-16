@@ -14,6 +14,7 @@
 #include "MsgDispatcher.h"
 #include "PidAllocator.h"
 #include "RspMessage.h"
+#include "Connection.h"
 
 using namespace NetIO;
 // Server打开8000监听端口->遇到连接请求，分配新的socket与客户端通信->继续监听
@@ -39,8 +40,8 @@ void Serve(std::shared_ptr<Socket> psock) {
     unsigned int pid = Utils::PidAlloc();
     ConnectRspMessage msg;
     MsgBuilder(msg, pid);
-
-    MessageHandler::MsgDispatcher::Instance().RegistSocket(pid, psock);
+    auto connection = std::make_shared<Connection>(psock);
+    MessageHandler::MsgDispatcher::Instance().RegistSocket(pid, connection);
     psock->Send(reinterpret_cast<const char *> (&msg), sizeof(msg));
     while (psock->IsConnected()) {
         std::string recvMsg = psock->Recv();
