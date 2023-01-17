@@ -14,6 +14,4 @@ namespace Timer {
     void ITimerListener::Start() {
         curTimerNode = GLOABL_TIMER.AddTimer(std::bind(&ITimerListener::HandleTimeOut, this), interval, 1);
     }
-
-    ITimerListener::~ITimerListener() {}
 }

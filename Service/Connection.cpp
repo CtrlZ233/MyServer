@@ -5,7 +5,7 @@
 #include "Connection.h"
 #include "EpollService.h"
 
-namespace NetIO {
+namespace Service {
     Connection::Connection(std::shared_ptr<Socket> sock) : ITimerListener(BEAT_INTERVAL) {
         this->sock = std::move(sock);
         this->Start();

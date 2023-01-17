@@ -1,11 +1,6 @@
 #include <netinet/in.h>
-#include <arpa/inet.h>
-#include <string.h>
-#include<unistd.h>
 #include <thread>
 #include <iostream>
-#include <vector>
-#include <csignal>
 #include "ISock.h"
 #include "ThreadPool.h"
 #include "LOG.h"
@@ -15,8 +10,10 @@
 #include "PidAllocator.h"
 #include "RspMessage.h"
 #include "Connection.h"
+#include "EpollService.h"
 
 using namespace NetIO;
+using namespace Service;
 // Server打开8000监听端口->遇到连接请求，分配新的socket与客户端通信->继续监听
 const int BUFSIZE = 512;
 const char* SERVER_ADDR  = "127.0.0.1";
@@ -25,7 +22,6 @@ const int BACKLOG = 10;
 
 Timer::Timer timer;
 
-extern bool registerRet;
 ThreadUtils::ThreadPool pool(10);
 
 using namespace MessageAdapter;
@@ -41,7 +37,9 @@ void Serve(std::shared_ptr<Socket> psock) {
     ConnectRspMessage msg;
     MsgBuilder(msg, pid);
     auto connection = std::make_shared<Connection>(psock);
-    MessageHandler::MsgDispatcher::Instance().RegistSocket(pid, connection);
+    MessageHandler::MsgDispatcher::Instance().RegisterConnection(pid, connection);
+    Service::EpollService::Instance().AddConnectionListener(connection);
+
     psock->Send(reinterpret_cast<const char *> (&msg), sizeof(msg));
     while (psock->IsConnected()) {
         std::string recvMsg = psock->Recv();
@@ -49,9 +47,9 @@ void Serve(std::shared_ptr<Socket> psock) {
         if (recvMsg.empty()) {
             continue;
         }
-        MessageHandler::MsgDispatcher::Instance().GenerateMessgae(recvMsg);
+        MessageHandler::MsgDispatcher::Instance().GenerateMessage(recvMsg);
     }
-    MessageHandler::MsgDispatcher::Instance().DeRegistSocket(pid);
+    MessageHandler::MsgDispatcher::Instance().DeRegisterConnection(pid);
 }
 
 void LogBackEnd() {
@@ -83,11 +81,11 @@ int main() {
 
 
     serverSocket.Listen(3);
-    int accpt_num = 100;
+    int accept_num = 100;
     pool.init();
     pool.AddTask(LogBackEnd);
     std::cout << "success" << std::endl;
-    while(accpt_num--) {
+    while(accept_num--) {
         auto psock = serverSocket.Accept();
         pool.AddTask(Serve, psock);
     }

@@ -17,7 +17,7 @@ namespace MessageHandler {
         return true;
     }
 
-    bool MsgDispatcher::RegistSocket(unsigned int pid, std::shared_ptr<Connection> connection) {
+    bool MsgDispatcher::RegisterConnection(unsigned int pid, std::shared_ptr<Connection> connection) {
         std::unique_lock<std::mutex> lock(pidLock);
         if (pid2connection.find(pid) != pid2connection.end()) {
             return false;
@@ -26,7 +26,7 @@ namespace MessageHandler {
         return true;
     }
 
-    bool MsgDispatcher::DeRegistSocket(unsigned int pid) {
+    bool MsgDispatcher::DeRegisterConnection(unsigned int pid) {
         {
             std::unique_lock<std::mutex> lock(pidLock);
             auto iter = pid2connection.find(pid);
@@ -39,7 +39,7 @@ namespace MessageHandler {
         return true;
     }
 
-    void MsgDispatcher::GenerateMessgae(std::string &msg) {
+    void MsgDispatcher::GenerateMessage(std::string &msg) {
         std::unique_lock<std::mutex> lock(RWLock);
         while (msgPool.size() == MAX_MESSAGE_NUM) {
             w_condition.wait(lock);
@@ -48,7 +48,7 @@ namespace MessageHandler {
         r_condition.notify_one();
     }
 
-    void MsgDispatcher::HandleMessage() {
+    [[noreturn]] void MsgDispatcher::HandleMessage() {
         while (true) {
             std::string msg;
             {
@@ -65,8 +65,8 @@ namespace MessageHandler {
                 printf("empty message!\n");
                 continue;;
             }
-            ReqMessage *iMsg = reinterpret_cast<ReqMessage *>(const_cast<char *>(msg.c_str()));
-            MsgType type = static_cast<MsgType>(iMsg->msgType);
+            auto *iMsg = reinterpret_cast<ReqMessage *>(const_cast<char *>(msg.c_str()));
+            auto type = static_cast<MsgType>(iMsg->msgType);
             unsigned int pid = iMsg->pid;
             auto handlerIter = handlers.find(type);
             std::shared_ptr<Connection> connection = nullptr;

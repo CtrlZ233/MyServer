@@ -2,7 +2,7 @@
 #define I_MESSAGE_H_
 
 #include <bits/types.h>
-
+#include <string>
 namespace MessageAdapter {
 
 #pragma pack(1)
@@ -22,6 +22,11 @@ const static int PASSWORD_MAX_LEN = 16;
         char passwd[PASSWORD_MAX_LEN];
     };
 #pragma pack()
+
+    struct RegisterInfo {
+        std::string userName;
+        std::string passwd;
+    };
 
 }
 

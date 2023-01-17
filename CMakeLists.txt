@@ -27,7 +27,5 @@ add_executable(Server
 )
 
 
-target_link_libraries(Server
-    PUBLIC
-        ISock_lib pthread ThreadPool_lib LOG_lib Timer_lib MsgHandler_lib PidAllocator_lib
-)
+target_link_libraries(Server PUBLIC
+        pthread Timer_lib ISock_lib  ThreadPool_lib LOG_lib MsgHandler_lib Service_lib)

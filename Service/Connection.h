@@ -7,11 +7,12 @@
 
 #include "ITimerListener.h"
 #include "ISock.h"
-namespace NetIO {
+namespace Service {
+    using namespace NetIO;
     class Connection : Timer::ITimerListener {
         public:
 
-            Connection(std::shared_ptr<Socket> sock);
+            explicit Connection(std::shared_ptr<Socket> sock);
 
             virtual void HandleTimeOut();
 
@@ -21,7 +22,7 @@ namespace NetIO {
 
             std::string Recv();
 
-
+            virtual ~Connection() = default;
 
         private:
             std::shared_ptr<Socket> sock;

@@ -12,28 +12,29 @@
 namespace MessageHandler {
     using namespace Utils;
     using namespace NetIO;
+    using Service::Connection;
     using MessageAdapter::MsgType;
 
     class MsgDispatcher {
     public:
         static MsgDispatcher& Instance();
 
-        void HandleMessage();
+        [[noreturn]] void HandleMessage();
 
-        void GenerateMessgae(std::string &msg);
+        void GenerateMessage(std::string &msg);
 
         bool RegisterHandler(MsgType type, MsgHandler *);
 
-        bool RegistSocket(unsigned int pid, std::shared_ptr<Connection> connection);
+        bool RegisterConnection(unsigned int pid, std::shared_ptr<Connection> connection);
 
-        bool DeRegistSocket(unsigned int pid);
-
-    private:
-        MsgDispatcher() {}
+        bool DeRegisterConnection(unsigned int pid);
 
         MsgDispatcher(const MsgDispatcher &other) = delete;
 
         MsgDispatcher operator = (const MsgDispatcher &other) = delete;
+
+    private:
+        MsgDispatcher() = default;
 
         ~MsgDispatcher();
 

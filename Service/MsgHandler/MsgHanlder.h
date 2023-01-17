@@ -12,7 +12,7 @@ namespace MessageHandler {
     class MsgHandler {
 
     public:
-        virtual void HandleMessage(ReqMessage *msg, std::shared_ptr<NetIO::Connection> connection) = 0;
+        virtual void HandleMessage(ReqMessage *msg, std::shared_ptr<Service::Connection> connection) = 0;
     };
 }
 

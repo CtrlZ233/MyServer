@@ -14,13 +14,13 @@ namespace Utils {
 
         void dealloc(unsigned int id);
 
-    private:
-
-        PidAllocator();
-
         PidAllocator(PidAllocator &other) = delete;
 
         PidAllocator operator = (PidAllocator &other) = delete;
+
+    private:
+
+        PidAllocator();
 
         unsigned int current;
         std::vector<unsigned int> recycled;

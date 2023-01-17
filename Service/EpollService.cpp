@@ -1,16 +1,18 @@
 #include "EpollService.h"
 #include "MsgDispatcher.h"
 #include <thread>
+#include <utility>
 
-namespace NetIO {
+namespace Service {
     EpollService &EpollService::Instance() {
         using MessageHandler::MsgDispatcher;
-        static EpollService instance(MAX_FD_SIZE, std::bind(&MsgDispatcher::HandleMessage, &MsgDispatcher::Instance()));
+        static EpollService instance(MAX_FD_SIZE,
+                                     std::bind(&MsgDispatcher::GenerateMessage, &MsgDispatcher::Instance(), std::placeholders::_1));
         return instance;
     }
 
-    EpollService::EpollService(unsigned int maxFdSize, std::function<void(std::string)> func)
-                                : handleMessageFunc(func), isShutdown(false) {
+    EpollService::EpollService(unsigned int maxFdSize, std::function<void(std::string &)> func)
+                                : handleMessageFunc(std::move(func)), isShutdown(false) {
         epollFd = epoll_create(maxFdSize);
         th = std::thread([=]() {
             epoll_event events[maxFdSize];
@@ -44,7 +46,7 @@ namespace NetIO {
             std::lock_guard<std::mutex> lock(this->RWLock);
             connections[connection->GetSocket()->socketFd_] = connection;
         }
-        epoll_event event;
+        epoll_event event{};
         event.data.fd = connection->GetSocket()->socketFd_;
         event.events = EPOLLIN | EPOLLET;
         epoll_ctl(epollFd, EPOLL_CTL_ADD, connection->GetSocket()->socketFd_, &event);
@@ -53,7 +55,7 @@ namespace NetIO {
     }
 
     void EpollService::DeleteConnectionLister(std::shared_ptr<Connection> connection) {
-        epoll_event event;
+        epoll_event event{};
         event.data.fd = connection->GetSocket()->socketFd_;
         epoll_ctl(epollFd, EPOLL_CTL_DEL, connection->GetSocket()->socketFd_, &event);
     }
