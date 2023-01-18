@@ -21,7 +21,7 @@ namespace MessageHandler {
 
         [[noreturn]] void HandleMessage();
 
-        void GenerateMessage(std::string &msg);
+        void GenerateMessage(const std::string &msg);
 
         bool RegisterHandler(MsgType type, MsgHandler *);
 

@@ -1,4 +1,6 @@
 #include "MsgDispatcher.h"
+
+#include <utility>
 #include "ReqMessage.h"
 
 namespace MessageHandler {
@@ -9,7 +11,7 @@ namespace MessageHandler {
     }
 
     bool MsgDispatcher::RegisterHandler(MsgType type, MsgHandler *handler) {
-        printf("this is regi\n");
+        printf("this is regi, type: %d\n", type);
         if (handlers.find(type) != handlers.end()) {
             return false;
         }
@@ -19,10 +21,11 @@ namespace MessageHandler {
 
     bool MsgDispatcher::RegisterConnection(unsigned int pid, std::shared_ptr<Connection> connection) {
         std::unique_lock<std::mutex> lock(pidLock);
+        printf("reg connection pid: %d\n", pid);
         if (pid2connection.find(pid) != pid2connection.end()) {
             return false;
         }
-        pid2connection[pid] = connection;
+        pid2connection[pid] = std::move(connection);
         return true;
     }
 
@@ -35,11 +38,10 @@ namespace MessageHandler {
             }
             pid2connection.erase(iter);
         }
-        Utils::PidDealloc(pid);
         return true;
     }
 
-    void MsgDispatcher::GenerateMessage(std::string &msg) {
+    void MsgDispatcher::GenerateMessage(const std::string &msg) {
         std::unique_lock<std::mutex> lock(RWLock);
         while (msgPool.size() == MAX_MESSAGE_NUM) {
             w_condition.wait(lock);
@@ -85,7 +87,9 @@ namespace MessageHandler {
                 continue;
             }
 
+
             handlerIter->second->HandleMessage(iMsg, connection);
+            printf("[dispatch]connection use count: %ld\n", connection.use_count());
         }
     }
 

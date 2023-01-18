@@ -42,6 +42,7 @@ namespace Service {
     }
 
     void EpollService::AddConnectionListener(std::shared_ptr<Connection> connection) {
+        printf("epoll service add event\n");
         {
             std::lock_guard<std::mutex> lock(this->RWLock);
             connections[connection->GetSocket()->socketFd_] = connection;
@@ -55,6 +56,7 @@ namespace Service {
     }
 
     void EpollService::DeleteConnectionLister(std::shared_ptr<Connection> connection) {
+        connections.erase(connection->GetSocket()->socketFd_);
         epoll_event event{};
         event.data.fd = connection->GetSocket()->socketFd_;
         epoll_ctl(epollFd, EPOLL_CTL_DEL, connection->GetSocket()->socketFd_, &event);

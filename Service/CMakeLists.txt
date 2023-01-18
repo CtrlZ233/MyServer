@@ -9,6 +9,6 @@ include_directories(${PROJECT_SOURCE_DIR}/Service/MsgAdapter)
 include_directories(${PROJECT_SOURCE_DIR}/Service/MsgHandler)
 include_directories(.)
 
-set (LIB_SOURCE PidAllocator.cpp EpollService.cpp Connection.cpp MsgAdapter/MsgEncoder.cpp MsgAdapter/MsgEncoder.h)
+set (LIB_SOURCE PidAllocator.cpp EpollService.cpp Connection.cpp)
 
 add_library(Service_lib OBJECT ${LIB_SOURCE})

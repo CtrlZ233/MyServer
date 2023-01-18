@@ -12,7 +12,7 @@ namespace Service {
     class Connection : Timer::ITimerListener {
         public:
 
-            explicit Connection(std::shared_ptr<Socket> sock);
+            Connection(std::shared_ptr<Socket> sock, unsigned int pid);
 
             virtual void HandleTimeOut();
 
@@ -20,13 +20,16 @@ namespace Service {
 
             void Send(std::string &s);
 
+            void Send(const char *buf, int size);
+
             std::string Recv();
 
-            virtual ~Connection() = default;
+            virtual ~Connection();
 
         private:
             std::shared_ptr<Socket> sock;
-            static const int BEAT_INTERVAL = 100;
+            unsigned int pid;
+            static const int BEAT_INTERVAL = 1000;
     };
 }
 

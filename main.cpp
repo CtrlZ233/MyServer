@@ -34,22 +34,13 @@ void MsgBuilder(ConnectRspMessage &msg, unsigned int pid) {
 
 void Serve(std::shared_ptr<Socket> psock) { 
     unsigned int pid = Utils::PidAlloc();
-    ConnectRspMessage msg;
+    ConnectRspMessage msg{};
     MsgBuilder(msg, pid);
-    auto connection = std::make_shared<Connection>(psock);
+    auto connection = std::make_shared<Connection>(psock, pid);
     MessageHandler::MsgDispatcher::Instance().RegisterConnection(pid, connection);
     Service::EpollService::Instance().AddConnectionListener(connection);
 
-    psock->Send(reinterpret_cast<const char *> (&msg), sizeof(msg));
-    while (psock->IsConnected()) {
-        std::string recvMsg = psock->Recv();
-        std::cout << "recv message from client: " << recvMsg << std::endl;
-        if (recvMsg.empty()) {
-            continue;
-        }
-        MessageHandler::MsgDispatcher::Instance().GenerateMessage(recvMsg);
-    }
-    MessageHandler::MsgDispatcher::Instance().DeRegisterConnection(pid);
+    connection->Send(reinterpret_cast<const char *> (&msg), sizeof(msg));
 }
 
 void LogBackEnd() {

@@ -16,5 +16,5 @@ namespace MessageHandler {
         printf("passwd: %s\n", registerMsg->passwd);
     }
 
-    static bool registerRet = MsgDispatcher::Instance().RegisterHandler(REGISTER_REQ, new RegisterMsgHandler());
+    static bool registerRet = MsgDispatcher::Instance().RegisterHandler(MsgType::REGISTER_REQ, new RegisterMsgHandler());
 }
