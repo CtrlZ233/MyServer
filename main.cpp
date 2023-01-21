@@ -11,6 +11,7 @@
 #include "RspMessage.h"
 #include "Connection.h"
 #include "EpollService.h"
+#include "DBOperator.h"
 
 using namespace NetIO;
 using namespace Service;

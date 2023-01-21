@@ -1,14 +1,15 @@
 #include "LOG.h"
 #include <ctime>
 #include <cstring>
+#include <memory>
 
 namespace Utils{
 
     std::string GetCurrentDateTime() {
-        time_t ts=time(NULL);
+        time_t ts=time(nullptr);
         char tmp[32]{0};
         strncpy(tmp,ctime(&ts),sizeof(tmp));
-        return std::string(tmp);
+        return std::string{tmp};
     }
 
     const int Log::maxSize = 1024;
@@ -30,8 +31,8 @@ namespace Utils{
             exit(-1);
         }
         isShutDown_ = false;
-        currentBuffer_ = std::shared_ptr<LogBuffer>(new LogBuffer);
-        nextBuffer_ = std::shared_ptr<LogBuffer>(new LogBuffer);
+        currentBuffer_ = std::make_shared<LogBuffer>();
+        nextBuffer_ = std::make_shared<LogBuffer>();
     }
 
 

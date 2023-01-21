@@ -4,29 +4,52 @@
 
 
 #include <mysql/mysql.h>
+#include "ITableRecord.h"
+#include "TableCache.h"
 
-namespace Utils {
+namespace DBAdapter {
+    static MYSQL mysql;
+    static const char *host = "127.0.0.1";
+    static const char *user = "root";
+    static const char *passwd = "123456";
+    static const char *db_name = "MyServerDB";
 
-    class DBAdapter {
-    public:
-        DBAdapter();
+    void connect_DB();
 
-        virtual void AddRecord() = 0;
+    template <typename Table>
+    class TableOperator {
+        public:
+            static bool AddRecord(std::shared_ptr<Table> t);
 
-        virtual void DeleteRecord() = 0;;
+            static void DeleteRecord(typename Table::Key &key);
 
-        virtual bool QueryRecored() = 0;
-
-        virtual ~DBAdapter();
-
-    private:
-        MYSQL mysql;
-        static const char *host;
-        static const char *user;
-        static const char *passwd;
-        static const char *db_name;
-        
+            static std::shared_ptr<Table> QueryRecored(typename Table::Key &key);
     };
+
+    template<typename Table>
+    std::shared_ptr<Table> TableOperator<Table>::QueryRecored(typename Table::Key &key) {
+        std::shared_ptr<Table> record = TableCache<Table>::Instance().Query(key);
+        if (record == nullptr) {
+            // TODO: query database
+        }
+        return record;
+    }
+
+    template<typename Table>
+    void TableOperator<Table>::DeleteRecord(typename Table::Key &key) {
+        TableCache<Table>::Instance().Delete(key);
+        // TODO: delete database
+    }
+
+    template<typename Table>
+    bool TableOperator<Table>::AddRecord(std::shared_ptr<Table> t) {
+        if (!TableCache<Table>::Instance().Add(t)) {
+            return false;
+        }
+        // TODO: insert database
+
+        return true;
+    }
 
 }
 
