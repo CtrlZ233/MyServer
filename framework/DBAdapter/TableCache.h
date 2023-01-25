@@ -14,6 +14,8 @@ namespace DBAdapter {
     struct ListNode {
         explicit ListNode(typename Table::Key &key);
 
+        ListNode() = default;
+
         typename Table::Key value;
         ListNode *prev;
         ListNode *next;
@@ -32,6 +34,7 @@ namespace DBAdapter {
 
     private:
         ListNode<Table> *head;
+        ListNode<Table> *tail;
     };
 
     template<typename Table>
@@ -50,7 +53,7 @@ namespace DBAdapter {
 
             std::shared_ptr<Table> Query(const typename Table::Key &key);
 
-        private:
+        private:new ListNode<Table>()
             TableCache() = default;
 
         private:
@@ -67,7 +70,8 @@ namespace DBAdapter {
 
     template<typename Table>
     List<Table>::List() {
-        head = nullptr;
+        head =
+        tail = nullptr;
     }
 
     template<typename Table>
@@ -127,8 +131,9 @@ namespace DBAdapter {
         std::lock_guard<std::mutex> lock(cache_mutex);
         auto iter = cache.find(key);
         if (iter != cache.end()) {
-
-            return iter->second;
+            auto node = iter->second.second;
+            LRU_list.PushFront(node);
+            return iter->second.first;
         }
         return nullptr;
     }
@@ -138,6 +143,8 @@ namespace DBAdapter {
         std::lock_guard<std::mutex> lock(cache_mutex);
         auto iter = cache.find(key);
         if (iter != cache.end()) {
+            auto node = iter->second.second;
+            LRU_list.Delete(node);
             cache.erase(iter);
             return true;
         }
