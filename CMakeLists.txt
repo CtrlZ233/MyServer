@@ -25,7 +25,7 @@ include_directories(${PROJECT_SOURCE_DIR}/Service/MsgHandler)
 
 add_executable(Server
     main.cpp
-)
+        )
 
 
 target_link_libraries(Server PUBLIC

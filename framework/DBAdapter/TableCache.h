@@ -6,9 +6,10 @@
 #define MYSERVER_TABLECACHE_H
 
 #include <map>
+#include <list>
 
 namespace DBAdapter {
-#define MAX_CACHE_LEN = 100;
+#define MAX_CACHE_LEN 100
 
     template<typename Table>
     struct ListNode {
@@ -32,10 +33,17 @@ namespace DBAdapter {
 
         void PushFront(ListNode<Table> *node);
 
+        ListNode<Table> *PopBack();
+
+        size_t Size() const;
+
     private:
         ListNode<Table> *head;
-        ListNode<Table> *tail;
+        ListNode<Table> *start;
+        ListNode<Table> *end;
+        size_t size;
     };
+
 
     template<typename Table>
     class TableCache {
@@ -53,7 +61,7 @@ namespace DBAdapter {
 
             std::shared_ptr<Table> Query(const typename Table::Key &key);
 
-        private:new ListNode<Table>()
+        private:
             TableCache() = default;
 
         private:
@@ -70,53 +78,65 @@ namespace DBAdapter {
 
     template<typename Table>
     List<Table>::List() {
-        head =
-        tail = nullptr;
+        head = new ListNode<Table>();
+        end = new ListNode<Table>();
+        head->next = end;
+        end->prev = head;
+        start = end;
+        size = 0;
     }
 
     template<typename Table>
     void List<Table>::Delete(ListNode<Table> *node) {
-        auto prev = node->prev;
-        auto next = node->next;
-        if (prev != nullptr) {
-            prev->next = next;
-        } else {
-            head = next;
-        }
-
-        if (next != nullptr) {
-            next->prev = prev;
-        }
-
+        ListNode<Table> *prev = node->prev;
+        prev->next = node->next;
+        node->next->prev = prev;
+        start = head->next;
         delete node;
     }
 
     template<typename Table>
     void List<Table>::PushFront(ListNode<Table> *node) {
-        auto prev = node->prev;
-        auto next = node->next;
-        if (prev != nullptr) {
-            prev->next = next;
-        } else {
-            head = next;
-        }
+        // delete node
+        ListNode<Table> *prev = node->prev;
+        prev->next = node->next;
+        node->next->prev = prev;
+        start = head->next;
 
-        if (next != nullptr) {
-            next->prev = prev;
-        }
-
-        node->next = head;
-        head->prev = node;
-        head = node;
+        // add node to start
+        head->next = node;
+        node->prev = head;
+        node->next = start;
+        start->prev = node;
+        start = node;
     }
 
     template<typename Table>
     ListNode<Table> *List<Table>::Add(typename Table::Key &key) {
         ListNode<Table> *node = new ListNode(key);
-        node->next = head;
-        head->prev = node;
-        head = node;
+        head->next = node;
+        node->prev = head;
+        node->next = start;
+        start->prev = node;
+        start = node;
         return node;
+    }
+
+    template<typename Table>
+    ListNode<Table> *List<Table>::PopBack() {
+        if (size == 0) {
+            return nullptr;
+        }
+
+        auto node = end->prev;
+        node->prev->next = end;
+        end->prev = node->prev;
+        return node;
+    }
+
+    template<typename Table>
+    size_t List<Table>::Size() const {
+        return size;
     }
 
 
@@ -154,7 +174,14 @@ namespace DBAdapter {
     template<typename Table>
     bool TableCache<Table>::Add(std::shared_ptr<Table> t) {
         std::lock_guard<std::mutex> lock(cache_mutex);
-        typename Table::Key key = Table::Key::from(t);
+        typename Table::Key key = Table::Key::From(t);
+
+        if (LRU_list.Size() >= MAX_CACHE_LEN) {
+            auto node = LRU_list.PopBack();
+            auto old_key = node->value;
+            delete node;
+            cache.erase(old_key);
+        }
         auto node = LRU_list.Add(key);
         auto iter = cache.find(key);
         if (iter != cache.end()) {
