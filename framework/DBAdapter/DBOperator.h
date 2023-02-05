@@ -6,6 +6,7 @@
 #include <mysql/mysql.h>
 #include "ITableRecord.h"
 #include "TableCache.h"
+#include "UserInfo/UserInfoTable.h"
 
 namespace DBAdapter {
     static MYSQL mysql;
@@ -21,7 +22,7 @@ namespace DBAdapter {
         public:
             static bool AddRecord(std::shared_ptr<Table> t);
 
-            static void DeleteRecord(typename Table::Key &key);
+            static void DeleteRecord(const typename Table::Key &key);
 
             static std::shared_ptr<Table> QueryRecored(typename Table::Key &key);
     };
@@ -30,13 +31,13 @@ namespace DBAdapter {
     std::shared_ptr<Table> TableOperator<Table>::QueryRecored(typename Table::Key &key) {
         std::shared_ptr<Table> record = TableCache<Table>::Instance().Query(key);
         if (record == nullptr) {
-            // TODO: query database
+            // TODO: query database & insert to cache
         }
         return record;
     }
 
     template<typename Table>
-    void TableOperator<Table>::DeleteRecord(typename Table::Key &key) {
+    void TableOperator<Table>::DeleteRecord(const typename Table::Key &key) {
         TableCache<Table>::Instance().Delete(key);
         // TODO: delete database
     }

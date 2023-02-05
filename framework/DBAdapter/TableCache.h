@@ -7,13 +7,13 @@
 
 #include <map>
 #include <list>
-
+#include "UserInfo/UserInfoTable.h"
 namespace DBAdapter {
 #define MAX_CACHE_LEN 100
 
     template<typename Table>
     struct ListNode {
-        explicit ListNode(typename Table::Key &key);
+        explicit ListNode(const typename Table::Key &key);
 
         ListNode() = default;
 
@@ -27,7 +27,7 @@ namespace DBAdapter {
     public:
         List();
 
-        ListNode<Table> *Add(typename Table::Key &key);
+        ListNode<Table> *Add(const typename Table::Key &key);
 
         void Delete(ListNode<Table> *node);
 
@@ -47,9 +47,9 @@ namespace DBAdapter {
 
     template<typename Table>
     class TableCache {
-        typedef std::pair<std::shared_ptr<TableCache>, ListNode<Table> *> CacheData;
+        typedef std::pair<std::shared_ptr<Table>, ListNode<Table> *> CacheData;
         public:
-            TableCache<Table> &Instance();
+            static TableCache<Table> &Instance();
 
             TableCache(const TableCache &) = delete;
 
@@ -57,7 +57,7 @@ namespace DBAdapter {
 
             bool Add(std::shared_ptr<Table> t);
 
-            bool Delete(typename Table::Key &key);
+            bool Delete(const typename Table::Key &key);
 
             std::shared_ptr<Table> Query(const typename Table::Key &key);
 
@@ -65,13 +65,13 @@ namespace DBAdapter {
             TableCache() = default;
 
         private:
-            std::map<typename Table::Key, CacheData> cache;
+            std::map<typename Table::Key, CacheData, typename Table::Key::Cmp> cache;
             std::mutex cache_mutex;
             List<Table> LRU_list;
     };
 
     template<typename Table>
-    ListNode<Table>::ListNode(typename Table::Key &key) : value(key) {
+    ListNode<Table>::ListNode(const typename Table::Key &key) : value(key) {
         prev = nullptr;
         next = nullptr;
     }
@@ -92,6 +92,7 @@ namespace DBAdapter {
         prev->next = node->next;
         node->next->prev = prev;
         start = head->next;
+        --size;
         delete node;
     }
 
@@ -112,13 +113,14 @@ namespace DBAdapter {
     }
 
     template<typename Table>
-    ListNode<Table> *List<Table>::Add(typename Table::Key &key) {
-        ListNode<Table> *node = new ListNode(key);
+    ListNode<Table> *List<Table>::Add(const typename Table::Key &key) {
+        auto *node = new ListNode<Table>(key);
         head->next = node;
         node->prev = head;
         node->next = start;
         start->prev = node;
         start = node;
+        ++size;
         return node;
     }
 
@@ -131,6 +133,7 @@ namespace DBAdapter {
         auto node = end->prev;
         node->prev->next = end;
         end->prev = node->prev;
+        --size;
         return node;
     }
 
@@ -159,7 +162,7 @@ namespace DBAdapter {
     }
 
     template<typename Table>
-    bool TableCache<Table>::Delete(typename Table::Key &key) {
+    bool TableCache<Table>::Delete(const typename Table::Key &key) {
         std::lock_guard<std::mutex> lock(cache_mutex);
         auto iter = cache.find(key);
         if (iter != cache.end()) {
@@ -188,7 +191,7 @@ namespace DBAdapter {
             return false;
         }
         cache[key] = std::make_pair(t, node);
-        return false;
+        return true;
     }
 }
 
