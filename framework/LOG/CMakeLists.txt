@@ -3,4 +3,4 @@ include_directories(${PROJECT_SOURCE_DIR}/SafeContainer)
 
 set (LIB_SOURCE LOG.cpp)
 
-add_library(LOG_libirary STATIC ${LIB_SOURCE})
+add_library(LOG_lib OBJECT ${LIB_SOURCE})

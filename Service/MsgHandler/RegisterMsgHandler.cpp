@@ -6,8 +6,8 @@
 namespace MessageHandler {
     using namespace MessageAdapter;
 
-    void RegisterMsgHandler::HandleMessage(ReqMessage *msg, std::shared_ptr<Socket> psock) {
-        RegisterReqMessage *registerMsg = reinterpret_cast<RegisterReqMessage *>(msg);
+    void RegisterMsgHandler::HandleMessage(ReqMessage *msg, std::shared_ptr<Service::Connection> connection) {
+        auto *registerMsg = reinterpret_cast<RegisterReqMessage *>(msg);
         if (registerMsg->msgType != REGISTER_REQ) {
             printf("wrong messageType:[%u]\n", registerMsg->msgType);
             return;
@@ -16,5 +16,5 @@ namespace MessageHandler {
         printf("passwd: %s\n", registerMsg->passwd);
     }
 
-    static bool registerRet = MsgDispatcher::Instance().RegisterHandler(REGISTER_REQ, new RegisterMsgHandler());
+    static bool registerRet = MsgDispatcher::Instance().RegisterHandler(MsgType::REGISTER_REQ, new RegisterMsgHandler());
 }

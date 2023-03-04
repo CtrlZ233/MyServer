@@ -8,13 +8,13 @@ namespace Timer {
         public:
             virtual void HandleTimeOut() = 0;
 
-            ITimerListener(unsigned int time_val);
+            explicit ITimerListener(unsigned int time_val);
 
             void ResetTimer();
 
             void Start();
 
-            virtual ~ITimerListener();
+            virtual ~ITimerListener() = default;
 
         private:
             uint32_t interval;

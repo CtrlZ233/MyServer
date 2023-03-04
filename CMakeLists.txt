@@ -16,6 +16,8 @@ include_directories(${PROJECT_SOURCE_DIR}/framework/LOG)
 include_directories(${PROJECT_SOURCE_DIR}/framework/Pool)
 include_directories(${PROJECT_SOURCE_DIR}/framework/Singleton)
 include_directories(${PROJECT_SOURCE_DIR}/framework/Timer)
+include_directories(${PROJECT_SOURCE_DIR}/framework/DBAdapter)
+include_directories(${PROJECT_SOURCE_DIR}/framework/DBAdapter/UserInfo)
 include_directories(${PROJECT_SOURCE_DIR}/SafeContainer)
 include_directories(${PROJECT_SOURCE_DIR}/NetIO)
 include_directories(${PROJECT_SOURCE_DIR}/Service)
@@ -23,11 +25,9 @@ include_directories(${PROJECT_SOURCE_DIR}/Service/MsgAdapter)
 include_directories(${PROJECT_SOURCE_DIR}/Service/MsgHandler)
 
 add_executable(Server
-    main.cpp
-)
+    main.cpp)
 
 
-target_link_libraries(Server
-    PUBLIC
-        ISock_library pthread ThreadPool_libirary LOG_libirary Timer_libirary MsgHandler_libirary PidAllocator_libirary
-)
+target_link_libraries(Server PUBLIC
+            pthread mysqlclient Timer_lib ISock_lib  ThreadPool_lib LOG_lib MsgHandler_lib Service_lib MsgAdapter_lib DBAdapter_lib
+        )

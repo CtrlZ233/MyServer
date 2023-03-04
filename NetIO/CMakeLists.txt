@@ -1,3 +1,4 @@
-set (LIB_SOURCE ISock.cpp EpollService.cpp)
+include_directories(.)
+set (LIB_SOURCE ISock.cpp)
 
-add_library(ISock_library STATIC ${LIB_SOURCE})
+add_library(ISock_lib OBJECT ${LIB_SOURCE})

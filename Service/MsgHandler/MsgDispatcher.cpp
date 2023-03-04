@@ -1,6 +1,7 @@
 #include "MsgDispatcher.h"
+
+#include <utility>
 #include "ReqMessage.h"
-#include "PidAllocator.h"
 
 namespace MessageHandler {
     using MessageAdapter::ReqMessage;
@@ -10,7 +11,7 @@ namespace MessageHandler {
     }
 
     bool MsgDispatcher::RegisterHandler(MsgType type, MsgHandler *handler) {
-        printf("this is regi\n");
+        printf("this is regi, type: %d\n", type);
         if (handlers.find(type) != handlers.end()) {
             return false;
         }
@@ -18,30 +19,31 @@ namespace MessageHandler {
         return true;
     }
 
-    bool MsgDispatcher::RegistSocket(unsigned int pid, std::shared_ptr<Socket> psock) {
+    bool MsgDispatcher::RegisterConnection(unsigned int pid, std::shared_ptr<Connection> connection) {
         std::unique_lock<std::mutex> lock(pidLock);
-        if (pid2sock.find(pid) != pid2sock.end()) {
+        printf("reg connection pid: %d\n", pid);
+        if (pid2connection.find(pid) != pid2connection.end()) {
             return false;
         }
-        pid2sock[pid] = psock;
+        pid2connection[pid] = std::move(connection);
         return true;
     }
 
-    bool MsgDispatcher::DeRegistSocket(unsigned int pid) {
+    bool MsgDispatcher::DeRegisterConnection(unsigned int pid) {
         {
             std::unique_lock<std::mutex> lock(pidLock);
-            auto iter = pid2sock.find(pid);
-            if (iter == pid2sock.end()) {
+            auto iter = pid2connection.find(pid);
+            if (iter == pid2connection.end()) {
                 return false;
             }
-            pid2sock.erase(iter);
+            pid2connection.erase(iter);
         }
-        Utils::PidDealloc(pid);
         return true;
     }
 
-    void MsgDispatcher::GenerateMessgae(std::string &msg) {
+    void MsgDispatcher::GenerateMessage(const std::string &msg) {
         std::unique_lock<std::mutex> lock(RWLock);
+        // bug: 会阻塞 EpollServer的监听线程
         while (msgPool.size() == MAX_MESSAGE_NUM) {
             w_condition.wait(lock);
         }
@@ -49,7 +51,7 @@ namespace MessageHandler {
         r_condition.notify_one();
     }
 
-    void MsgDispatcher::HandleMessage() {
+    [[noreturn]] void MsgDispatcher::HandleMessage() {
         while (true) {
             std::string msg;
             {
@@ -66,28 +68,29 @@ namespace MessageHandler {
                 printf("empty message!\n");
                 continue;;
             }
-            ReqMessage *iMsg = reinterpret_cast<ReqMessage *>(const_cast<char *>(msg.c_str()));
-            MsgType type = static_cast<MsgType>(iMsg->msgType);
+            auto *iMsg = reinterpret_cast<ReqMessage *>(const_cast<char *>(msg.c_str()));
+            auto type = static_cast<MsgType>(iMsg->msgType);
             unsigned int pid = iMsg->pid;
-            auto sockIter = pid2sock.end();
             auto handlerIter = handlers.find(type);
-            std::shared_ptr<Socket> psock = nullptr;
+            std::shared_ptr<Connection> connection = nullptr;
             {
                 std::unique_lock<std::mutex> lock(pidLock);
-                auto sockIter = pid2sock.find(pid);
+                auto connectionIter = pid2connection.find(pid);
                 // printf("handles size: %u, sockets size: %u\n", handlers.size(), pid2sock.size());
-                if (handlerIter == handlers.end() || sockIter == pid2sock.end()) {
+                if (handlerIter == handlers.end() || connectionIter == pid2connection.end()) {
                     printf("find handler[type: %u] or socket[pid: %u] failed!\n", type, pid);
                     continue;
                 }
-                psock = sockIter->second;
+                connection = connectionIter->second;
             }
             
-            if (psock == nullptr) {
+            if (connection == nullptr) {
                 continue;
             }
 
-            handlerIter->second->HandleMessage(iMsg, psock);
+
+            handlerIter->second->HandleMessage(iMsg, connection);
+            printf("[dispatch]connection use count: %ld\n", connection.use_count());
         }
     }
 

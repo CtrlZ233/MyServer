@@ -4,6 +4,7 @@
 #include <memory>
 #include "ReqMessage.h"
 #include "ISock.h"
+#include "Connection.h"
 
 namespace MessageHandler {
     using namespace MessageAdapter;
@@ -11,7 +12,7 @@ namespace MessageHandler {
     class MsgHandler {
 
     public:
-        virtual void HandleMessage(ReqMessage *msg, std::shared_ptr<Socket> psock) = 0;
+        virtual void HandleMessage(ReqMessage *msg, std::shared_ptr<Service::Connection> connection) = 0;
     };
 }
 
