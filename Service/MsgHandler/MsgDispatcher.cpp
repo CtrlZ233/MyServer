@@ -43,6 +43,7 @@ namespace MessageHandler {
 
     void MsgDispatcher::GenerateMessage(const std::string &msg) {
         std::unique_lock<std::mutex> lock(RWLock);
+        // bug: 会阻塞 EpollServer的监听线程
         while (msgPool.size() == MAX_MESSAGE_NUM) {
             w_condition.wait(lock);
         }

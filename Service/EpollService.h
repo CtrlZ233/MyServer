@@ -13,9 +13,9 @@ namespace Service {
         public:
             static EpollService &Instance();
 
-            void AddConnectionListener(std::shared_ptr<Connection>);
+            void AddConnectionListener(const std::shared_ptr<Connection>&);
 
-            void DeleteConnectionLister(std::shared_ptr<Connection>);
+            void DeleteConnectionLister(const std::shared_ptr<Connection>&);
 
             EpollService(const EpollService &other) = delete;
 

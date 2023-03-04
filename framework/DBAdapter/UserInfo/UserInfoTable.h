@@ -14,7 +14,7 @@ namespace DBAdapter {
 #define MAX_USER_PASSWD_LEN 16
     struct UserInfoKey;
     struct UserInfoTableRecord {
-        DEFINE_TABLE_BASE_ATTR("User", 1)
+        DEFINE_TABLE_BASE_ATTR("Users", 1)
         std::string name;
         std::string passwd;
 
@@ -27,6 +27,14 @@ namespace DBAdapter {
             passwd = std::move(u_passwd);
         }
 
+        std::string ToStream() {
+            return "\"" + name + "\"" + ", " + "\"" + passwd + "\"";
+        }
+
+//        UserInfoTableRecord(std::string dataString) {
+//
+//        }
+
         typedef UserInfoKey Key;
     };
 
@@ -38,9 +46,15 @@ namespace DBAdapter {
             return UserInfoKey{ std::string (record->name) };
         }
 
+        std::string Condition() const {
+            std::string str = "id=";
+            return str + "\"" + name + "\"";
+        }
         explicit UserInfoKey(std::string u_name) {
             name = std::move(u_name);
         }
+
+
 
         UserInfoKey(const UserInfoKey &key) {
             name = key.name;

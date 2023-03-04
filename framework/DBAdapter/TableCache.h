@@ -7,7 +7,9 @@
 
 #include <map>
 #include <list>
-#include "UserInfo/UserInfoTable.h"
+#include <cassert>
+#include <memory>
+#include <mutex>
 namespace DBAdapter {
 #define MAX_CACHE_LEN 100
 
@@ -178,18 +180,18 @@ namespace DBAdapter {
     bool TableCache<Table>::Add(std::shared_ptr<Table> t) {
         std::lock_guard<std::mutex> lock(cache_mutex);
         typename Table::Key key = Table::Key::From(t);
-
+        auto iter = cache.find(key);
+        if (iter != cache.end()) {
+            return false;
+        }
         if (LRU_list.Size() >= MAX_CACHE_LEN) {
             auto node = LRU_list.PopBack();
+            assert(node != nullptr);
             auto old_key = node->value;
             delete node;
             cache.erase(old_key);
         }
         auto node = LRU_list.Add(key);
-        auto iter = cache.find(key);
-        if (iter != cache.end()) {
-            return false;
-        }
         cache[key] = std::make_pair(t, node);
         return true;
     }
