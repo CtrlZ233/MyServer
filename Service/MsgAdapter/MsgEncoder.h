@@ -7,6 +7,7 @@
 
 #include "ReqMessage.h"
 #include "RspMessage.h"
+#include "MsgDefine.h"
 
 namespace MessageAdapter {
     class MsgEncoder {
@@ -14,6 +15,11 @@ namespace MessageAdapter {
             static std::string EncodeDisConnectionReq(unsigned int pid);
 
             static std::string EncodeConnectionRsp(unsigned int pid);
+
+            static std::string EncodeRegisterRsp(unsigned int pid, ResponseCode code);
+
+        private:
+            static void EncodeRsp(RspMessage *msg, unsigned int pid, ResponseCode code, MsgType type);
     };
 }
 

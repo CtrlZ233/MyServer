@@ -59,41 +59,46 @@ void RecordTest() {
     std::string u_name = "test1";
     std::string u_passwd = "12345678";
     auto record = std::make_shared<UserInfoTableRecord>(u_name, u_passwd);
-//    TableOperator<UserInfoTableRecord>::AddRecord(record);
     auto query_record = TableOperator<UserInfoTableRecord>::QueryRecord(UserInfoKey{"test1"});
-//    TableOperator<UserInfoTableRecord>::DeleteRecord(UserInfoKey{"test1"});
+    assert(query_record == nullptr);
+    TableOperator<UserInfoTableRecord>::AddRecord(record);
+    query_record = TableOperator<UserInfoTableRecord>::QueryRecord(UserInfoKey{"test1"});
+    assert(query_record != nullptr);
+    TableOperator<UserInfoTableRecord>::DeleteRecord(UserInfoKey{"test1"});
+    query_record = TableOperator<UserInfoTableRecord>::QueryRecord(UserInfoKey{"test1"});
+    assert(query_record == nullptr);
 }
 
 
 int main() {
-    RecordTest();
-//    sockaddr_in m_addr;
-//    Socket serverSocket;
-//
-//    SockAddr serverAddr(AF_INET, SERVER_ADDR, SERVER_PORT);
-//    serverSocket.Bind(serverAddr);
-//
-//    int backlog = 10;
-//
-//    int msgHandlerNum = 3;
-//
-//    for (int i = 0; i < msgHandlerNum; ++i) {
-//        pool.AddTask(HandleMessage);
-//    }
-//    // 启用新的线程用于定时器计数
-//    std::thread th(&Timer::Timer::Start, &timer, 10000);
-//
-//
-//    serverSocket.Listen(3);
-//    int accept_num = 100;
-//    pool.init();
-//    pool.AddTask(LogBackEnd);
-//    std::cout << "success" << std::endl;
-//    while(accept_num--) {
-//        auto psock = serverSocket.Accept();
-//        pool.AddTask(Serve, psock);
-//    }
-//    // todo: 需要等待所有任务执行完
-//    GETLOG.ShutDown();
-//    th.join();
+//    RecordTest();
+    sockaddr_in m_addr;
+    Socket serverSocket;
+
+    SockAddr serverAddr(AF_INET, SERVER_ADDR, SERVER_PORT);
+    serverSocket.Bind(serverAddr);
+
+    int backlog = 10;
+
+    int msgHandlerNum = 3;
+
+    for (int i = 0; i < msgHandlerNum; ++i) {
+        pool.AddTask(HandleMessage);
+    }
+    // 启用新的线程用于定时器计数
+    std::thread th(&Timer::Timer::Start, &timer, 10000);
+
+
+    serverSocket.Listen(3);
+    int accept_num = 100;
+    pool.init();
+    pool.AddTask(LogBackEnd);
+    std::cout << "success" << std::endl;
+    while(accept_num--) {
+        auto psock = serverSocket.Accept();
+        pool.AddTask(Serve, psock);
+    }
+    // todo: 需要等待所有任务执行完
+    GETLOG.ShutDown();
+    th.join();
 }

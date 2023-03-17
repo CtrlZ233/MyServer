@@ -16,15 +16,16 @@ namespace MessageHandler {
             return false;
         }
         handlers[type] = handler;
+        printf("handler size: %d\n", handlers.size());
         return true;
     }
 
     bool MsgDispatcher::RegisterConnection(unsigned int pid, std::shared_ptr<Connection> connection) {
         std::unique_lock<std::mutex> lock(pidLock);
-        printf("reg connection pid: %d\n", pid);
         if (pid2connection.find(pid) != pid2connection.end()) {
             return false;
         }
+        printf("reg connection pid: %d\n", pid);
         pid2connection[pid] = std::move(connection);
         return true;
     }
@@ -70,13 +71,13 @@ namespace MessageHandler {
             }
             auto *iMsg = reinterpret_cast<ReqMessage *>(const_cast<char *>(msg.c_str()));
             auto type = static_cast<MsgType>(iMsg->msgType);
+            printf("msg type: %d\n", type);
             unsigned int pid = iMsg->pid;
             auto handlerIter = handlers.find(type);
             std::shared_ptr<Connection> connection = nullptr;
             {
                 std::unique_lock<std::mutex> lock(pidLock);
                 auto connectionIter = pid2connection.find(pid);
-                // printf("handles size: %u, sockets size: %u\n", handlers.size(), pid2sock.size());
                 if (handlerIter == handlers.end() || connectionIter == pid2connection.end()) {
                     printf("find handler[type: %u] or socket[pid: %u] failed!\n", type, pid);
                     continue;

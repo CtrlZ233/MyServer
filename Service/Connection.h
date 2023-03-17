@@ -29,7 +29,7 @@ namespace Service {
         private:
             std::shared_ptr<Socket> sock;
             unsigned int pid;
-            static const int BEAT_INTERVAL = 1000;
+            static const int BEAT_INTERVAL = 100000;
     };
 }
 

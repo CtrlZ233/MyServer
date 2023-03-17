@@ -7,13 +7,15 @@
 #include "ITableRecord.h"
 #include "TableCache.h"
 
+#include <vector>
+
 namespace DBAdapter {
     static MYSQL mysql;
     static const char *HOST = "127.0.0.1";
     static const char *USER = "root";
     static const char *PASSWD = "123456";
     static const char *DB_NAME = "MyServerDB";
-
+    
     bool ConnectDB();
 
     bool AddRecord2DB(const char *tableName, const char *dataStream);
@@ -36,11 +38,25 @@ namespace DBAdapter {
     std::shared_ptr<Table> TableOperator<Table>::QueryRecord(const typename Table::Key &key) {
         std::shared_ptr<Table> record = TableCache<Table>::Instance().Query(key);
         if (record == nullptr) {
-            // TODO: query database & insert to cache
+            printf("query db\n");
+            // query database & insert to cache
             const char *tableName = Table::tableName;
             std::string keyCondition = key.Condition();
-            auto str_record = QueryRecordFromDB(tableName, keyCondition.c_str());
+            auto str_records = QueryRecordFromDB(tableName, keyCondition.c_str());
+            if (str_records.length() == 0) {
+                return nullptr;
+            }
+            std::vector<Table> records;
+            Table::FromStr(records, str_records);
+            if (records.size() > 1) {
+                printf("get not only one record!!!");
+            }
+            record = std::make_shared<Table>(records[0]);
+            TableCache<Table>::Instance().Add(record);
+        } else {
+            printf("query cache\n");
         }
+
         return record;
     }
 

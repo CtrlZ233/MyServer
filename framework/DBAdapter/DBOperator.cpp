@@ -4,6 +4,7 @@
 
 #include <mysql/mysql.h>
 #include "DBOperator.h"
+
 static MYSQL *DB_CONNECTION;
 namespace DBAdapter {
     bool ConnectDB() {
@@ -19,12 +20,13 @@ namespace DBAdapter {
     static bool connect_res = ConnectDB();
 
     std::string QueryRecordFromDB(const char *tableName, const char *condition) {
+        std::string ans;
         std::string sql = "select * from " + std::string(tableName);
         sql += " where " + std::string(condition) + ";";
-        printf("[QueryRecordFromDB]sql: %s\n", sql.c_str());
+//        printf("[QueryRecordFromDB]sql: %s\n", sql.c_str());
         if(mysql_query(DB_CONNECTION, sql.c_str())) {
             printf("query db failed!");
-            return "";
+            return ans;
         }
 
         MYSQL_RES *query_res = mysql_store_result(DB_CONNECTION);
@@ -32,15 +34,17 @@ namespace DBAdapter {
         if (query_res) {
             auto row = mysql_num_rows(query_res);
             auto col = mysql_num_fields(query_res);
-            printf("[QueryRecordFromDB] row: %lld, %u\n", row, col);
             for (int i = 1; i < row + 1; ++i) {
                 res_row = mysql_fetch_row(query_res);
                 for (int j = 0; j < col; ++j) {
-                    printf("%s", res_row[j]);
+                    ans += res_row[j];
+                    ans += ",";
                 }
+                ans += ";";
             }
         }
-        return "";
+        mysql_free_result(query_res);
+        return ans;
     }
 
     bool AddRecord2DB(const char *tableName, const char *dataStream) {

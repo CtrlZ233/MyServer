@@ -25,9 +25,11 @@ include_directories(${PROJECT_SOURCE_DIR}/Service/MsgAdapter)
 include_directories(${PROJECT_SOURCE_DIR}/Service/MsgHandler)
 
 add_executable(Server
-    main.cpp)
+    main.cpp
+        )
 
 
 target_link_libraries(Server PUBLIC
-            pthread mysqlclient Timer_lib ISock_lib  ThreadPool_lib LOG_lib MsgHandler_lib Service_lib MsgAdapter_lib DBAdapter_lib
+            pthread mysqlclient Timer_lib ISock_lib  ThreadPool_lib LOG_lib MsgHandler_lib
+            Service_lib MsgAdapter_lib DBAdapter_lib Utils_lib UserInfo_lib
         )

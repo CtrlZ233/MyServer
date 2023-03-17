@@ -1,3 +1,5 @@
+add_subdirectory(UserInfo)
+
 include_directories(${PROJECT_SOURCE_DIR}/framework/DBAdapter/UserInfo)
 
 set(LIB_SOURCE DBOperator.cpp)

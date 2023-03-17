@@ -21,12 +21,12 @@ const static int PASSWORD_MAX_LEN = 16;
         char username[USERNAME_MAX_LEN];
         char passwd[PASSWORD_MAX_LEN];
     };
-#pragma pack()
 
     struct RegisterInfo {
         std::string userName;
         std::string passwd;
     };
+#pragma pack()
 
 }
 

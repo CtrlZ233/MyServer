@@ -9,31 +9,24 @@
 #include <string>
 #include <stdexcept>
 #include <memory>
+#include <vector>
 namespace DBAdapter {
 #define MAX_USER_NAME_LEN 32
 #define MAX_USER_PASSWD_LEN 16
+#define MAX_ELEM_NUM 2
     struct UserInfoKey;
     struct UserInfoTableRecord {
-        DEFINE_TABLE_BASE_ATTR("Users", 1)
+        DEFINE_TABLE_BASE_ATTR("Users", 1);
         std::string name;
         std::string passwd;
 
-        UserInfoTableRecord(std::string &u_name, std::string &u_passwd) {
-            if (u_name.length() > MAX_USER_NAME_LEN || u_passwd.length() > MAX_USER_PASSWD_LEN) {
-                throw std::runtime_error("invalid user data");
-            }
-
-            name = std::move(u_name);
-            passwd = std::move(u_passwd);
-        }
+        UserInfoTableRecord(std::string &u_name, std::string &u_passwd);
 
         std::string ToStream() {
             return "\"" + name + "\"" + ", " + "\"" + passwd + "\"";
         }
 
-//        UserInfoTableRecord(std::string dataString) {
-//
-//        }
+        static void FromStr(std::vector<UserInfoTableRecord> &records, const std::string &data_stream);
 
         typedef UserInfoKey Key;
     };
@@ -53,8 +46,6 @@ namespace DBAdapter {
         explicit UserInfoKey(std::string u_name) {
             name = std::move(u_name);
         }
-
-
 
         UserInfoKey(const UserInfoKey &key) {
             name = key.name;

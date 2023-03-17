@@ -15,6 +15,7 @@ namespace MessageAdapter {
         INVALID_REQ,
         SERVER_ERR,
         CONN_MAX,
+        REQ_FAILED,
         ResponseCode_BOTTOM
     };
 

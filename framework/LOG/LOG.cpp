@@ -28,7 +28,7 @@ namespace Utils{
         fd_.open(logFilePath_, std::ios::out);
         if (!fd_) {
             printf("open log file failed.\n");
-            exit(-1);
+//            exit(-1);
         }
         isShutDown_ = false;
         currentBuffer_ = std::make_shared<LogBuffer>();

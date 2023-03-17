@@ -10,14 +10,15 @@ namespace MessageAdapter {
         __uint8_t msgType;
         __uint32_t pid;
     };
-#pragma pack()
 
-
-#pragma pack(1)
     struct ConnectRspMessage : public RspMessage {
         __uint32_t allocPid;
     };
+
+    struct RegisterRspMessage : public  RspMessage {
+    };
 #pragma pack()
+
 
 }
 
