@@ -38,15 +38,15 @@ namespace NetIO {
             printf("Socket State expected is connected.\n ");
             return false;
         }
+        int send_buffer_size;
+        socklen_t optlen = sizeof(send_buffer_size);
+        getsockopt(socketFd_, SOL_SOCKET, SO_SNDBUF, &send_buffer_size, &optlen);
+//        printf("send buffer size: %d\n", send_buffer_size);
         if (::send(socketFd_, buf, size, MSG_NOSIGNAL) <= 0) {
             printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
             return false;
         }
         return true;
-    }
-    
-    bool Socket::Send(std::string & s) {
-        return Send(s.c_str(), s.length());
     }
 
     int Socket::Recv(char *buf, int max_len) {

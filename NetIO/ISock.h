@@ -28,8 +28,6 @@ namespace NetIO {
 
         bool Send(const char *buf, int size);
 
-        bool Send(std::string & s);
-
         int Recv(char *buf, int max_len);
 
         std::string Recv();

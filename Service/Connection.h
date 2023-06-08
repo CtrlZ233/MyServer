@@ -18,8 +18,6 @@ namespace Service {
 
             std::shared_ptr<Socket> GetSocket() { return sock; }
 
-            void Send(std::string &s);
-
             void Send(const char *buf, int size);
 
             std::string Recv();

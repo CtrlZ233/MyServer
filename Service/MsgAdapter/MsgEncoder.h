@@ -16,10 +16,10 @@ namespace MessageAdapter {
 
             static std::string EncodeConnectionRsp(unsigned int pid);
 
-            static std::string EncodeRegisterRsp(unsigned int pid, ResponseCode code);
+            static void EncodeRegisterRsp(RegisterRspMessage &msg, unsigned int pid, ResponseCode code);
 
         private:
-            static void EncodeRsp(RspMessage *msg, unsigned int pid, ResponseCode code, MsgType type);
+            static void EncodeRsp(RspMessage &msg, unsigned int pid, ResponseCode code, MsgType type);
     };
 }
 

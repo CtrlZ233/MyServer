@@ -37,8 +37,9 @@ namespace MessageHandler {
                 code = OK;
             }
         }
-        auto rsp_msg = MsgEncoder::EncodeRegisterRsp(registerMsg->pid, code);
-        connection->Send(rsp_msg);
+        RegisterRspMessage rsp_msg{};
+        MsgEncoder::EncodeRegisterRsp(rsp_msg, registerMsg->pid, code);
+        connection->Send(reinterpret_cast<const char *> (&rsp_msg), sizeof(rsp_msg));
     }
 
     static bool registerRet = MsgDispatcher::Instance().RegisterHandler(MsgType::REGISTER_REQ, new RegisterMsgHandler());

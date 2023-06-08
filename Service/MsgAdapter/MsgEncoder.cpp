@@ -20,16 +20,14 @@ namespace MessageAdapter {
         return std::string{reinterpret_cast<const char *>(&msg)};
     }
 
-    void MsgEncoder::EncodeRsp(RspMessage *msg, unsigned int pid, ResponseCode code, MsgType type) {
-        msg->msgType = type;
-        msg->statusCode = code;
-        msg->pid = pid;
+    void MsgEncoder::EncodeRsp(RspMessage &msg, unsigned int pid, ResponseCode code, MsgType type) {
+        msg.msgType = type;
+        msg.statusCode = code;
+        msg.pid = pid;
     }
 
-    std::string MsgEncoder::EncodeRegisterRsp(unsigned int pid, ResponseCode code) {
-        RegisterRspMessage msg{};
-        EncodeRsp(reinterpret_cast<RspMessage *>(&msg), pid, code, MsgType::REGISTER_REQ);
-        return std::string{reinterpret_cast<const char *>(&msg)};
+    void MsgEncoder::EncodeRegisterRsp(RegisterRspMessage &msg, unsigned int pid, ResponseCode code) {
+        EncodeRsp(msg, pid, code, MsgType::REGISTER_REQ);
     }
 
 }

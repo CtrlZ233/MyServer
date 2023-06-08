@@ -19,11 +19,6 @@ namespace Service {
         MessageHandler::MsgDispatcher::Instance().GenerateMessage(MessageAdapter::MsgEncoder::EncodeDisConnectionReq(pid));
     }
 
-
-    void Connection::Send(std::string &s) {
-        sock->Send(s);
-    }
-
     void Connection::Send(const char *buf, int size) {
         sock->Send(buf, size);
     }
